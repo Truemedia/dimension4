@@ -5,9 +5,14 @@ import WorldGrid from './WorldGrid'
 export default class GameGrid {
     constructor(options, spawnWorldCoords) {
         this.options = options
-        this.pixelGrid = new PixelGrid({min: 0, max: 160})
-        this.viewportGrid = new ViewportGrid({min: 0, max: 10})
-        this.worldGrid = new WorldGrid({min: -200, max: 200})
+
+        let {tilePixelSize} = this.options
+        let [viewportTileCount] = this.options.viewportTiles
+        let [worldMin, worldMax] = this.options.worldTiles
+
+        this.pixelGrid = new PixelGrid({min: 0, max: (tilePixelSize * viewportTileCount)})
+        this.viewportGrid = new ViewportGrid({min: 0, max: viewportTileCount})
+        this.worldGrid = new WorldGrid({min: worldMin, max: worldMax})
         this.spawnWorldCoords = spawnWorldCoords
     }
 
