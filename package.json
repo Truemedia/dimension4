@@ -2,9 +2,10 @@
   "name": "dimension4",
   "version": "1.0.0",
   "description": "A node tool for dealing with advanced dimension plotting",
-  "main": "index.js",
+  "main": "bundle.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup src/main.js --file bundle.js --format cjs",
+    "test": "node test.js"
   },
   "repository": {
     "type": "git",
