@@ -13,21 +13,21 @@ export default class CanvasGrid extends GameGrid
     plotTile(tile) {
         let {worldX, worldY} = tile
         let {tileDimensions} = this
-        let [pixelX, pixelY] = this.pixelCoordsFromViewportCoords(
+        let pixelCoords = this.pixelCoordsFromViewportCoords(
             this.viewportCoordsFromWorldCoords([worldX, worldY])
         )
         
         if (Object.keys(tile).includes('shape')) {
-            this.drawShape(tile.shape, [pixelX, pixelY], tileDimensions)
+            this.drawShape(tile.shape, pixelCoords, tileDimensions)
         } else {
-            this.drawImage(tile.img, tileDimensions)
+            this.drawImage(tile.img, pixelCoords, tileDimensions)
         }
         
     }
 
-    drawImage(img, dimensions) {
+    drawImage(img, coords, dimensions) {
         let ctx = this.canvas.getContext('2d')
-        ctx.drawImage(img, ...dimensions)
+        ctx.drawImage(img, ...coords, ...dimensions)
     }
 
     drawShape(shape, coords, dimensions) {
