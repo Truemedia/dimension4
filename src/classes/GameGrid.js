@@ -16,6 +16,10 @@ export default class GameGrid {
         this.spawnWorldCoords = spawnWorldCoords
     }
 
+    get tileDimensions() {
+        return Array(2).fill(this.options.tilePixelSize)
+    }
+
     // Get world coordinates after center offset (top left)
     get worldCoordsAfterOffset() {
         let [x, y] = this.spawnWorldCoords
