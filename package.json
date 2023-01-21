@@ -1,6 +1,6 @@
 {
   "name": "dimension4",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "A node tool for dealing with advanced dimension plotting",
   "main": "node.js",
   "browser": "browser.js",
@@ -20,5 +20,11 @@
   "bugs": {
     "url": "https://github.com/Truemedia/dimension4/issues"
   },
-  "homepage": "https://github.com/Truemedia/dimension4#readme"
+  "homepage": "https://github.com/Truemedia/dimension4#readme",
+  "dependencies": {
+    "two.js": "^0.8.10"
+  },
+  "devDependencies": {
+    "rollup-plugin-node-resolve": "^5.2.0"
+  }
 }

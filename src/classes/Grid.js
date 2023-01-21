@@ -41,8 +41,4 @@ export default class Grid {
     get radiusY() {
         return this.maxY - this.centreY
     }
-
-    isWithinGrid(coords) {
-        
-    }
 }

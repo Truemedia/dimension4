@@ -1,13 +1,33 @@
 import GameGrid from './GameGrid'
+import Two from 'two.js'
+import {ZUI} from 'two.js/extras/jsm/zui'
 
 export default class CanvasGrid extends GameGrid
 {
+    constructor(options, spawnWorldCoords) {
+        super(options, spawnWorldCoords)
+
+        let {height, width} = this
+
+        this.two = new Two({
+            domElement: this.canvas,
+            height, width,
+            fullscreen: false,
+            autostart: true
+        })
+        this.stage = new Two.Group()
+        this.zui = new ZUI(this.stage)
+        this.zui.addLimits(0.06, 8);
+        this.mouse = new Two.Vector()
+    }
+
     get canvas() {
         return document.querySelector('canvas')
     }
 
     plotTiles(tiles) {
         tiles.map(tile => this.plotTile(tile))
+        this.two.add(this.stage)
     }
 
     plotTile(tile) {
@@ -26,17 +46,22 @@ export default class CanvasGrid extends GameGrid
     }
 
     drawImage(img, coords, dimensions) {
-        let ctx = this.canvas.getContext('2d')
-        ctx.drawImage(img, ...coords, ...dimensions)
+        let [x, y] = coords
+        let [width, height] = dimensions
+        let centerX = x + (width / 2)
+        let centerY = y + (height / 2)
+        this.stage.add( new Two.Sprite(img, centerX, centerY) )
     }
 
     drawShape(shape, coords, dimensions) {
-        let ctx = this.canvas.getContext('2d')
+        let [x, y] = coords
+        let [width, height] = dimensions
+        let centerX = x + (width / 2)
+        let centerY = y + (height / 2)
+
         switch (shape) {
             case 'rectangle':
-                ctx.beginPath()
-                ctx.rect(...coords, ...dimensions)
-                ctx.stroke()
+                this.stage.add( new Two.Rectangle(centerX, centerY, ...dimensions) )
             break;
         }
     }

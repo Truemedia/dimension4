@@ -2,6 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+var two_js = require('two.js');
+
 class Grid {
     constructor(options)
     {
@@ -128,6 +130,8 @@ class GameGrid {
     }
 }
 
+console.log('two', two_js.Two);
+
 class CanvasGrid extends GameGrid
 {
     get canvas() {
@@ -170,5 +174,11 @@ class CanvasGrid extends GameGrid
     }
 }
 
+class TileMap
+{
+
+}
+
 exports.CanvasGrid = CanvasGrid;
 exports.GameGrid = GameGrid;
+exports.TileMap = TileMap;
