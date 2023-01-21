@@ -1,4 +1,4 @@
-import {CanvasGrid} from './browser.js'
+import {CanvasGrid} from './../browser.js'
 
 let grid = new CanvasGrid({
     tilePixelSize: 16,

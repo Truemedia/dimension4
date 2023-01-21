@@ -25,6 +25,11 @@ export default class CanvasGrid extends GameGrid
         return document.querySelector('canvas')
     }
 
+    // Plot base tiles that fill out world
+    plotBaseTiles() {
+        
+    }
+
     plotTiles(tiles) {
         tiles.map(tile => this.plotTile(tile))
         this.two.add(this.stage)
