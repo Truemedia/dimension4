@@ -11492,7 +11492,7 @@ class CanvasGrid extends GameGrid
         this.stage = new Two.Group();
         this.zui = new ZUI(this.stage);
         this.zui.addLimits(0.06, 8);
-        this.mouse = new Two.Vector();
+        this.mouse = new Two.Vector(null, null);
     }
 
     get canvas() {

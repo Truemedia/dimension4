@@ -16,7 +16,8 @@ function onMouseMove(event)
 {
     var rect = canvas.getBoundingClientRect();
     let [mouseX, mouseY] = [event.clientX - rect.left, event.clientY - rect.top]
-    if (grid.mouse.x !== 0 && grid.mouse.y !== 0) {
+    console.log('test', grid.mouse.x, grid.mouse.y)
+    if (grid.mouse.x !== null && grid.mouse.y !== null) {
         let [panX, panY] = [mouseX - grid.mouse.x, mouseY - grid.mouse.y]
         grid.zui.translateSurface(panX, panY)
     }
@@ -25,12 +26,24 @@ function onMouseMove(event)
     grid.mouse.y = mouseY
 }
 
-let canvas = document.querySelector('#stage')
-// mouse in
-// mouse out
-canvas.addEventListener('mousedown', (event) => {
+function onMouseDown() {
     canvas.addEventListener('mousemove', onMouseMove, false)
-})
-canvas.addEventListener('mouseup', (event) => {
+}
+
+function onMouseUp() {
     canvas.removeEventListener('mousemove', onMouseMove, false)
+}
+
+let canvas = document.querySelector('#stage')
+canvas.addEventListener('mouseenter', () => {
+    canvas.addEventListener('mousedown', onMouseDown, false)
+    canvas.addEventListener('mouseup', onMouseUp, false)
+})
+canvas.addEventListener('mouseleave', () => {
+    canvas.removeEventListener('mousedown', onMouseDown, false)
+    canvas.removeEventListener('mouseup', onMouseUp, false)
+    canvas.removeEventListener('mousemove', onMouseMove, false)
+
+    grid.mouse.x = null
+    grid.mouse.y = null
 })
