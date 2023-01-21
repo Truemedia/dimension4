@@ -6,7 +6,7 @@
   "browser": "browser.js",
   "scripts": {
     "build": "npm run build:browser && npm run build:node",
-    "build:browser": "rollup src/main.js --file browser.js --format es",
+    "build:browser": "rollup -c",
     "build:node": "rollup src/main.js --file node.js --format cjs",
     "serve": "http-server ./",
     "test": "node test.js"

@@ -7,6 +7,7 @@ let grid = new CanvasGrid({
 }, [50, 50])
 
 grid.plotTiles([
+    {worldX: 44, worldY: 44, img: 'Untitled.png'},
     {worldX: 45, worldY: 45, img: 'Untitled.png'},
     {worldX: 54, worldY: 54, shape: 'rectangle'}
 ])
