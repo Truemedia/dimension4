@@ -11544,12 +11544,10 @@ class CanvasGrid extends GameGrid
         let [x, y] = coords;
         let [width, height] = dimensions;
 
-        let [topLeft, topRight, bottomRight, bottomLeft] = [
-            coords,
-            [x + width, y]
-            [y + height],
-            [x, y + height],
-        ];
+        let topLeft = coords;
+        let topRight = [x + width, y];
+        let bottomRight = [x + width, y + height];
+        let bottomLeft = [x, y + height];
 
         new Array(
             [topLeft, topRight],
@@ -11557,9 +11555,8 @@ class CanvasGrid extends GameGrid
             [bottomRight, bottomLeft],
             [bottomLeft, topLeft]
         ).map( ([coordsStart, coordsEnd]) => {
-            let line = new Two.Line(coordsStart, coordsEnd);
             // line.fill = '#ff0'
-            this.stage.add(line);
+            this.stage.add( new Two.Line(coordsStart, coordsEnd) );
         });
     }
 

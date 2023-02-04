@@ -85,8 +85,6 @@ export default class CanvasGrid extends GameGrid
             // line.fill = '#ff0'
             this.stage.add( new Two.Line(coordsStart, coordsEnd) )
         })
-
-        this.stage.add( new Two.Line(x, y, 10, 10) )
     }
 
     drawImage(img, coords, dimensions) {
