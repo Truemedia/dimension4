@@ -25,17 +25,31 @@ export default class CanvasGrid extends GameGrid
         return document.querySelector('canvas')
     }
 
-    // Plot base tiles that fill out world
-    plotBaseTiles() {
+    // Plot base tiles that fills out a radius
+    plotBaseTiles(radius, coords, tile) {
+        let {minX, minY, maxX, maxY} = this.worldGrid
         
+        for (let x = minX; x < maxX; x++) {
+            for (let y = minY; y < maxY; y++) {
+                console.log(x, y)
+                // this.plotTile(
+                //     Object.assign({}, tile, {worldX: x, worldY: y})
+                // )
+            }
+        }
     }
 
     plotTiles(tiles) {
         tiles.map(tile => this.plotTile(tile))
+    }
+    
+    refreshStage() {
         this.two.add(this.stage)
     }
 
     plotTile(tile) {
+        let border = true
+
         let {worldX, worldY} = tile
         let {tileDimensions} = this
         let pixelCoords = this.pixelCoordsFromViewportCoords(
@@ -48,6 +62,32 @@ export default class CanvasGrid extends GameGrid
             this.drawImage(tile.img, pixelCoords, tileDimensions)
         }
         
+        if (border) {
+            this.drawBorder(pixelCoords, tileDimensions)
+        }
+    }
+
+    drawBorder(coords, dimensions) {
+        let [x, y] = coords
+        let [width, height] = dimensions
+
+        let [topLeft, topRight, bottomRight, bottomLeft] = [
+            coords,
+            [x + width, y]
+            [x + width, y + height],
+            [x, y + height],
+        ]
+
+        new Array(
+            [topLeft, topRight],
+            [topRight, bottomRight],
+            [bottomRight, bottomLeft],
+            [bottomLeft, topLeft]
+        ).map( ([coordsStart, coordsEnd]) => {
+            let line = new Two.Line(coordsStart, coordsEnd)
+            // line.fill = '#ff0'
+            this.stage.add(line)
+        })
     }
 
     drawImage(img, coords, dimensions) {
