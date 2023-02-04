@@ -11540,6 +11540,10 @@ class CanvasGrid extends GameGrid
         }
     }
 
+    line(coordsStart, coordsEnd) {
+        return new Two.Line(coordsStart, coordsEnd)
+    }
+
     drawBorder(coords, dimensions) {
         let [x, y] = coords;
         let [width, height] = dimensions;
@@ -11556,6 +11560,7 @@ class CanvasGrid extends GameGrid
             [bottomLeft, topLeft]
         ).map( ([coordsStart, coordsEnd]) => {
             // line.fill = '#ff0'
+            console.log('cc', coordsStart, coordsEnd);
             this.stage.add( new Two.Line(coordsStart, coordsEnd) );
         });
     }
