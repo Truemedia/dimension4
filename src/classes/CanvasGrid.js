@@ -86,9 +86,9 @@ export default class CanvasGrid extends GameGrid
             [bottomRight, bottomLeft],
             [bottomLeft, topLeft]
         ).map( ([coordsStart, coordsEnd]) => {
-            // line.fill = '#ff0'
-            console.log('cc', coordsStart, coordsEnd)
-            this.stage.add( new Two.Line(...coordsStart, ...coordsEnd) )
+            let line = new Two.Line(...coordsStart, ...coordsEnd)
+            line.stroke = '#ccc'
+            this.stage.add(line)
         })
     }
 
