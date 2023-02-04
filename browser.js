@@ -11561,7 +11561,7 @@ class CanvasGrid extends GameGrid
         ).map( ([coordsStart, coordsEnd]) => {
             // line.fill = '#ff0'
             console.log('cc', coordsStart, coordsEnd);
-            this.stage.add( new Two.Line(coordsStart, coordsEnd) );
+            this.stage.add( new Two.Line(...coordsStart, ...coordsEnd) );
         });
     }
 
