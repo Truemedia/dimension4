@@ -71,12 +71,10 @@ export default class CanvasGrid extends GameGrid
         let [x, y] = coords
         let [width, height] = dimensions
 
-        let [topLeft, topRight, bottomRight, bottomLeft] = [
-            coords,
-            [x + width, y]
-            [x + width, y + height],
-            [x, y + height],
-        ]
+        let topLeft = coords
+        let topRight = [x + width, y]
+        let bottomRight = [x + width, y + height]
+        let bottomLeft = [x, y + height]
 
         new Array(
             [topLeft, topRight],
@@ -84,10 +82,11 @@ export default class CanvasGrid extends GameGrid
             [bottomRight, bottomLeft],
             [bottomLeft, topLeft]
         ).map( ([coordsStart, coordsEnd]) => {
-            let line = new Two.Line(coordsStart, coordsEnd)
             // line.fill = '#ff0'
-            this.stage.add(line)
+            this.stage.add( new Two.Line(coordsStart, coordsEnd) )
         })
+
+        this.stage.add( new Two.Line(x, y, 10, 10) )
     }
 
     drawImage(img, coords, dimensions) {
