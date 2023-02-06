@@ -11495,20 +11495,23 @@ class CanvasGrid extends GameGrid
         this.mouse = new Two.Vector(null, null);
     }
 
+    // bindEvents() {
+
+    // }
+
     get canvas() {
         return document.querySelector('canvas')
     }
 
     // Plot base tiles that fills out a radius
-    plotBaseTiles(radius, coords, tile) {
+    plotBaseTiles(tile) {
         let {minX, minY, maxX, maxY} = this.worldGrid;
         
         for (let x = minX; x < maxX; x++) {
             for (let y = minY; y < maxY; y++) {
-                console.log(x, y);
-                // this.plotTile(
-                //     Object.assign({}, tile, {worldX: x, worldY: y})
-                // )
+                this.plotTile(
+                    Object.assign({}, tile, {worldX: x, worldY: y})
+                );
             }
         }
     }
