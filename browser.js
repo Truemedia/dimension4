@@ -55,9 +55,13 @@ class WorldGrid extends Grid {
     
 }
 
+const DEFAULTS$1 = {
+    tilePixelSize: 16
+};
+
 class GameGrid {
     constructor(options, spawnWorldCoords) {
-        this.options = options;
+        this.options = Object.assign({}, DEFAULTS$1, options);
         let {tilePixelSize} = this.options;
         let [viewportTileCount] = this.options.viewportTiles;
         let [worldMin, worldMax] = this.options.worldTiles;

@@ -2,9 +2,13 @@ import PixelGrid from './PixelGrid'
 import ViewportGrid from './ViewportGrid'
 import WorldGrid from './WorldGrid'
 
+const DEFAULTS = {
+    tilePixelSize: 16
+}
+
 export default class GameGrid {
     constructor(options, spawnWorldCoords) {
-        this.options = options
+        this.options = Object.assign({}, DEFAULTS, options)
         let {tilePixelSize} = this.options
         let [viewportTileCount] = this.options.viewportTiles
         let [worldMin, worldMax] = this.options.worldTiles
