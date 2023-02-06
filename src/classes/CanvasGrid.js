@@ -35,9 +35,8 @@ export default class CanvasGrid extends GameGrid
         
         for (let x = minX; x < maxX; x++) {
             for (let y = minY; y < maxY; y++) {
-                this.plotTile(
-                    Object.assign({}, tile, {worldX: x, worldY: y})
-                )
+                tile.worldCoords = [x, y]
+                this.plotTile(tile)
             }
         }
     }
@@ -51,21 +50,19 @@ export default class CanvasGrid extends GameGrid
     }
 
     plotTile(tile) {
-        let border = true
-
-        let {worldX, worldY} = tile
+        let {worldCoords} = tile
         let {tileDimensions} = this
         let pixelCoords = this.pixelCoordsFromViewportCoords(
-            this.viewportCoordsFromWorldCoords([worldX, worldY])
+            this.viewportCoordsFromWorldCoords(worldCoords)
         )
         
-        if (Object.keys(tile).includes('shape')) {
+        if (tile.isShape) {
             this.drawShape(tile.shape, pixelCoords, tileDimensions)
-        } else {
+        } else if (tile.isImage) {
             this.drawImage(tile.img, pixelCoords, tileDimensions)
         }
         
-        if (border) {
+        if (tile.hasBorder) {
             this.drawBorder(pixelCoords, tileDimensions)
         }
     }

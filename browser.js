@@ -11509,9 +11509,8 @@ class CanvasGrid extends GameGrid
         
         for (let x = minX; x < maxX; x++) {
             for (let y = minY; y < maxY; y++) {
-                this.plotTile(
-                    Object.assign({}, tile, {worldX: x, worldY: y})
-                );
+                tile.worldCoords = [x, y];
+                this.plotTile(tile);
             }
         }
     }
@@ -11525,20 +11524,19 @@ class CanvasGrid extends GameGrid
     }
 
     plotTile(tile) {
-
-        let {worldX, worldY} = tile;
+        let {worldCoords} = tile;
         let {tileDimensions} = this;
         let pixelCoords = this.pixelCoordsFromViewportCoords(
-            this.viewportCoordsFromWorldCoords([worldX, worldY])
+            this.viewportCoordsFromWorldCoords(worldCoords)
         );
         
-        if (Object.keys(tile).includes('shape')) {
+        if (tile.isShape) {
             this.drawShape(tile.shape, pixelCoords, tileDimensions);
-        } else {
+        } else if (tile.isImage) {
             this.drawImage(tile.img, pixelCoords, tileDimensions);
         }
         
-        {
+        if (tile.hasBorder) {
             this.drawBorder(pixelCoords, tileDimensions);
         }
     }
@@ -11590,9 +11588,46 @@ class CanvasGrid extends GameGrid
     }
 }
 
+const DEFAULTS = {
+    border: true
+};
+
+class Tile
+{
+    constructor(options) {
+        this.options = Object.assign({}, DEFAULTS, options);
+    }
+
+    set worldCoords(worldCoords) {
+        let [worldX, worldY] = worldCoords;
+        Object.assign(this.options, {worldX, worldY});
+    }
+
+    get worldCoords() {
+        let {worldX, worldY} = this.options;
+        return [worldX, worldY]
+    }
+
+    get shape() {
+        return this.isShape ? this.options.shape : null 
+    }
+
+    get hasBorder() {
+        return this.options?.border ?? false
+    }
+
+    get isShape() {
+        return Object.keys(this.options).includes('shape')
+    }
+
+    get isImage() {
+        return Object.keys(this.options).includes('img')
+    }
+}
+
 class TileMap
 {
 
 }
 
-export { CanvasGrid, GameGrid, TileMap };
+export { CanvasGrid, GameGrid, Tile, TileMap };
