@@ -83,11 +83,18 @@ export default class GameGrid {
         ]
     }
 
+    // Convert number of tiles into number of pixels
+    tileCountAsPixels(tileCount) {
+        let {tilePixelSize} = this.options
+        return tileCount * tilePixelSize
+    }
+
     pixelCoordsFromViewportCoords(viewportCoords) {
         let [x, y] = viewportCoords
-        let {tilePixelSize} = this.options
 
-        return [tilePixelSize * x, tilePixelSize * y]
+        return [
+            this.tileCountAsPixels(x), this.tileCountAsPixels(y)
+        ]
     }
 
     withinViewport(worldCoords) {

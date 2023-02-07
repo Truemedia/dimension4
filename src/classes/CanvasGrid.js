@@ -21,6 +21,13 @@ export default class CanvasGrid extends GameGrid
         this.mouse = new Two.Vector(null, null)
     }
 
+    // Pan viewport on axis (increment/decrement)
+    panViewport(panX, panY) {
+        this.zui.translateSurface(
+            this.tileCountAsPixels(panX), this.tileCountAsPixels(panY)
+        )
+    }
+
     // bindEvents() {
 
     // }

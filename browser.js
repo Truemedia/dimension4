@@ -141,11 +141,18 @@ class GameGrid {
         ]
     }
 
+    // Convert number of tiles into number of pixels
+    tileCountAsPixels(tileCount) {
+        let {tilePixelSize} = this.options;
+        return tileCount * tilePixelSize
+    }
+
     pixelCoordsFromViewportCoords(viewportCoords) {
         let [x, y] = viewportCoords;
-        let {tilePixelSize} = this.options;
 
-        return [tilePixelSize * x, tilePixelSize * y]
+        return [
+            this.tileCountAsPixels(x), this.tileCountAsPixels(y)
+        ]
     }
 
     withinViewport(worldCoords) {
@@ -11544,6 +11551,13 @@ class CanvasGrid extends GameGrid
         this.zui = new ZUI(this.stage);
         this.zui.addLimits(0.06, 8);
         this.mouse = new Two.Vector(null, null);
+    }
+
+    // Pan viewport on axis (increment/decrement)
+    panViewport(panX, panY) {
+        this.zui.translateSurface(
+            this.tileCountAsPixels(panX), this.tileCountAsPixels(panY)
+        );
     }
 
     // bindEvents() {
