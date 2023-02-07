@@ -48,8 +48,15 @@ class Grid {
     }
 }
 
-class PixelGrid extends Grid {
+class PixelGrid extends Grid
+{
+    get minX() {
+        return 0
+    }
 
+    get minY() {
+        return 0
+    }
 }
 
 class ViewportGrid extends Grid {
@@ -11534,6 +11541,13 @@ class ZUI {
 
 }
 
+const TEXT_STYLES = {
+    family: 'proxima-nova, sans-serif',
+    size: 4,
+    leading: 50,
+    weight: 900
+};
+
 class CanvasGrid extends GameGrid
 {
     constructor(mixedOptions, spawnWorldCoords) {
@@ -11604,6 +11618,9 @@ class CanvasGrid extends GameGrid
         if (tile.hasBorder) {
             this.drawBorder(pixelCoords, tileDimensions);
         }
+        if (tile.hasText) {
+            this.drawText(tile.text, pixelCoords, [8, 8]);
+        }
     }
 
     line(coordsStart, coordsEnd) {
@@ -11651,16 +11668,31 @@ class CanvasGrid extends GameGrid
             break;
         }
     }
+    
+    drawText(message, coords, offsetCoords) {
+        // Use coords as default message if blank string
+        if (message === '') {
+            message = coords.join(',');
+        }
+
+        let [x, y] = coords;
+        let [offsetX, offsetY] = offsetCoords;
+        x += offsetX;
+        y += offsetY;
+
+        this.stage.add( new Two.Text(message, ...[x, y], TEXT_STYLES) );
+    }
 }
 
 const DEFAULTS = {
-    border: true
+    border: true,
+    max: 16
 };
 
-class Tile
+class Tile extends PixelGrid
 {
     constructor(options) {
-        this.options = Object.assign({}, DEFAULTS, options);
+        super( Object.assign({}, DEFAULTS, options) );
     }
 
     set worldCoords(worldCoords) {
@@ -11677,8 +11709,20 @@ class Tile
         return this.isShape ? this.options.shape : null 
     }
 
+    get text() {
+        return this.hasText ? this.options.text : null
+    }
+
+    set text(text) {
+        this.options.text = text;
+    }
+
     get hasBorder() {
         return this.options?.border ?? false
+    }
+
+    get hasText() {
+        return (typeof this.options?.text === 'string') ?? false
     }
 
     get isShape() {

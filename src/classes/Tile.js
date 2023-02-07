@@ -1,11 +1,14 @@
+import PixelGrid from './PixelGrid'
+
 const DEFAULTS = {
-    border: true
+    border: true,
+    max: 16
 }
 
-export default class Tile
+export default class Tile extends PixelGrid
 {
     constructor(options) {
-        this.options = Object.assign({}, DEFAULTS, options)
+        super( Object.assign({}, DEFAULTS, options) )
     }
 
     set worldCoords(worldCoords) {
@@ -22,8 +25,20 @@ export default class Tile
         return this.isShape ? this.options.shape : null 
     }
 
+    get text() {
+        return this.hasText ? this.options.text : null
+    }
+
+    set text(text) {
+        this.options.text = text
+    }
+
     get hasBorder() {
         return this.options?.border ?? false
+    }
+
+    get hasText() {
+        return (typeof this.options?.text === 'string') ?? false
     }
 
     get isShape() {

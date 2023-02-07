@@ -2,6 +2,13 @@ import GameGrid from './GameGrid'
 import Two from 'two.js'
 import {ZUI} from 'two.js/extras/jsm/zui'
 
+const TEXT_STYLES = {
+    family: 'proxima-nova, sans-serif',
+    size: 4,
+    leading: 50,
+    weight: 900
+}
+
 export default class CanvasGrid extends GameGrid
 {
     constructor(mixedOptions, spawnWorldCoords) {
@@ -72,6 +79,9 @@ export default class CanvasGrid extends GameGrid
         if (tile.hasBorder) {
             this.drawBorder(pixelCoords, tileDimensions)
         }
+        if (tile.hasText) {
+            this.drawText(tile.text, pixelCoords, [8, 8])
+        }
     }
 
     line(coordsStart, coordsEnd) {
@@ -118,5 +128,19 @@ export default class CanvasGrid extends GameGrid
                 this.stage.add( new Two.Rectangle(centerX, centerY, ...dimensions) )
             break;
         }
+    }
+    
+    drawText(message, coords, offsetCoords) {
+        // Use coords as default message if blank string
+        if (message === '') {
+            message = coords.join(',')
+        }
+
+        let [x, y] = coords
+        let [offsetX, offsetY] = offsetCoords
+        x += offsetX
+        y += offsetY
+
+        this.stage.add( new Two.Text(message, ...[x, y], TEXT_STYLES) )
     }
 }
