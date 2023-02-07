@@ -24,6 +24,11 @@ export default class Grid {
         return (min + max) / 2
     }
 
+    get centreCoords() {
+        let {centreX, centreY} = this
+        return [centreX, centreY]
+    }
+
     get centreX() {
         let {minX, maxX} = this
         return this.midpoint(minX, maxX)

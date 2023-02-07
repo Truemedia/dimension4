@@ -4,8 +4,8 @@ import {ZUI} from 'two.js/extras/jsm/zui'
 
 export default class CanvasGrid extends GameGrid
 {
-    constructor(options, spawnWorldCoords) {
-        super(options, spawnWorldCoords)
+    constructor(mixedOptions, spawnWorldCoords) {
+        super(mixedOptions, spawnWorldCoords)
 
         let {height, width} = this
 

@@ -24,6 +24,11 @@ class Grid {
         return (min + max) / 2
     }
 
+    get centreCoords() {
+        let {centreX, centreY} = this;
+        return [centreX, centreY]
+    }
+
     get centreX() {
         let {minX, maxX} = this;
         return this.midpoint(minX, maxX)
@@ -60,7 +65,9 @@ const DEFAULTS$1 = {
 };
 
 class GameGrid {
-    constructor(options, spawnWorldCoords) {
+    constructor(mixedOptions, spawn = null) {
+        let options = this.options(mixedOptions);
+
         this.options = Object.assign({}, DEFAULTS$1, options);
         let {tilePixelSize} = this.options;
         let [viewportTileCount] = this.options.viewportTiles;
@@ -69,7 +76,7 @@ class GameGrid {
         this.pixelGrid = new PixelGrid({min: 0, max: (tilePixelSize * viewportTileCount)});
         this.viewportGrid = new ViewportGrid({min: 0, max: viewportTileCount});
         this.worldGrid = new WorldGrid({min: worldMin, max: worldMax});
-        this.spawnWorldCoords = spawnWorldCoords;
+        this.spawnWorldCoords = this.spawn(spawn);
     }
 
     get height() {
@@ -82,6 +89,46 @@ class GameGrid {
 
     get tileDimensions() {
         return Array(2).fill(this.options.tilePixelSize)
+    }
+
+    options(mixedOptions) {
+        let options = {};
+
+        switch (typeof mixedOptions) {
+            case 'number':
+                let size = mixedOptions;
+                options = {
+                    viewportTiles: Array(2).fill(size),
+                    worldTiles: [0, size]
+                };
+            break;
+            case 'object':
+                if (Array.isArray(mixedOptions)) {
+                    // If nested array assumed first array is viewport, second array is world
+                    if (mixedOptions.every( (iteration) => Array.isArray(iteration))) {
+                        let [viewportTiles, worldTiles] = mixedOptions;
+                        options = {viewportTiles, worldTiles};
+                    }
+                } else {
+                    options = mixedOptions;
+                }
+            break;
+        }
+
+        return options
+    }
+
+    spawn(spawn) {
+        let spawnWorldCoords = [];
+
+        if (spawn === null) {
+            // Spawn in center if no spawn world coords provided
+            spawnWorldCoords = this.worldGrid.centreCoords;
+        } else {
+            spawnWorldCoords = spawn;
+        }
+
+        return spawnWorldCoords
     }
 
     // Get world coordinates after center offset (top left)
@@ -11482,8 +11529,8 @@ class ZUI {
 
 class CanvasGrid extends GameGrid
 {
-    constructor(options, spawnWorldCoords) {
-        super(options, spawnWorldCoords);
+    constructor(mixedOptions, spawnWorldCoords) {
+        super(mixedOptions, spawnWorldCoords);
 
         let {height, width} = this;
 
