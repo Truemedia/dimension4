@@ -80,7 +80,20 @@ export default class CanvasGrid extends GameGrid
             this.drawBorder(pixelCoords, tileDimensions)
         }
         if (tile.hasText) {
-            this.drawText(tile.text, pixelCoords, [8, 8])
+            // Use coords as default message if blank string
+            let debugCoordsType = 'pixel'
+            let debugCoords = null
+            switch (debugCoordsType) {
+                case 'pixel':
+                    debugCoords = pixelCoords
+                break;
+                case 'world':
+                    debugCoords = worldCoords
+                break;
+            }
+
+            let message = (tile.text !== '') ? tile.text : debugCoords.join(',')
+            this.drawText(message, pixelCoords, [8, 8])
         }
     }
 
@@ -131,11 +144,6 @@ export default class CanvasGrid extends GameGrid
     }
     
     drawText(message, coords, offsetCoords) {
-        // Use coords as default message if blank string
-        if (message === '') {
-            message = coords.join(',')
-        }
-
         let [x, y] = coords
         let [offsetX, offsetY] = offsetCoords
         x += offsetX
