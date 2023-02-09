@@ -2,7 +2,7 @@ import GameGrid from './GameGrid'
 import Two from 'two.js'
 import {ZUI} from 'two.js/extras/jsm/zui'
 
-const TEXT_STYLES = {
+const DEFAULT_TEXT_STYLES = {
     family: 'proxima-nova, sans-serif',
     size: 4,
     leading: 50,
@@ -93,7 +93,8 @@ export default class CanvasGrid extends GameGrid
             }
 
             let message = (tile.text !== '') ? tile.text : debugCoords.join(',')
-            this.drawText(message, pixelCoords, [8, 8])
+            console.log('my tile', tile)
+            this.drawText(message, pixelCoords, [8, 8], tile.options?.textStyles)
         }
     }
 
@@ -143,12 +144,17 @@ export default class CanvasGrid extends GameGrid
         }
     }
     
-    drawText(message, coords, offsetCoords) {
+    drawText(message, coords, offsetCoords, textStyles) {
         let [x, y] = coords
         let [offsetX, offsetY] = offsetCoords
         x += offsetX
         y += offsetY
 
-        this.stage.add( new Two.Text(message, ...[x, y], TEXT_STYLES) )
+        this.stage.add( new Two.Text(message, ...[x, y], this.textStyles(textStyles)) )
+    }
+
+    textStyles(styles = {}) {
+        console.log('ds', DEFAULT_TEXT_STYLES, styles)
+        return Object.assign({}, DEFAULT_TEXT_STYLES, styles)
     }
 }
