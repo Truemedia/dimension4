@@ -11631,9 +11631,9 @@ class CanvasGrid extends GameGrid
                 break;
             }
 
-            let message = (tile.text !== '') ? tile.text : debugCoords.join(',');
-            console.log('my tile', tile);
-            this.drawText(message, pixelCoords, [8, 8], tile.options?.textStyles);
+            let message = (tile.text !== '') ? tile.text : debugCoords.join(', ');
+            let centrePoint = this.options.tilePixelSize / 2;
+            this.drawText(message, pixelCoords, [centrePoint, centrePoint], tile.options?.textStyles);
         }
     }
 
