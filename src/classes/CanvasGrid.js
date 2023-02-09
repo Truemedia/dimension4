@@ -26,6 +26,8 @@ export default class CanvasGrid extends GameGrid
         this.zui = new ZUI(this.stage)
         this.zui.addLimits(0.06, 8);
         this.mouse = new Two.Vector(null, null)
+
+        this.bindEvents()
     }
 
     // Pan viewport on axis (increment/decrement)
@@ -35,9 +37,33 @@ export default class CanvasGrid extends GameGrid
         )
     }
 
-    // bindEvents() {
+    bindEvents() {
+        let onMouseDown = () => {
+            this.canvas.addEventListener('mousemove', onMouseMove, false)
+        }
 
-    // }
+        let onMouseUp = () => {
+            this.canvas.removeEventListener('mousemove', onMouseMove, false)
+        }
+
+        let onMouseMove = (event) =>
+        {
+            var rect = this.canvas.getBoundingClientRect();
+            let [mouseX, mouseY] = [event.clientX - rect.left, event.clientY - rect.top]
+            if (this.mouse.x !== null && this.mouse.y !== null) {
+                let [panX, panY] = [mouseX - this.mouse.x, mouseY - this.mouse.y]
+                this.zui.translateSurface(panX, panY)
+            }
+
+            this.mouse.x = mouseX
+            this.mouse.y = mouseY
+        }
+
+        this.canvas.addEventListener('mouseenter', () => {
+            this.canvas.addEventListener('mousedown', onMouseDown, false)
+            this.canvas.addEventListener('mouseup', onMouseUp, false)
+        })
+    }
 
     get canvas() {
         return document.querySelector('canvas')
@@ -154,7 +180,6 @@ export default class CanvasGrid extends GameGrid
     }
 
     textStyles(styles = {}) {
-        console.log('ds', DEFAULT_TEXT_STYLES, styles)
         return Object.assign({}, DEFAULT_TEXT_STYLES, styles)
     }
 }
