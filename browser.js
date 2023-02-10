@@ -12449,16 +12449,16 @@ class CanvasGrid extends GameGrid
         const PAN_INCREMENT = 1;
 
         keycon.keydown(controlScheme['⬆️'], e => {
-            this.panViewport(0, -PAN_INCREMENT);
+            this.panViewport(0, PAN_INCREMENT);
         });
         keycon.keydown(controlScheme['⬅️'], e => {
-            this.panViewport(-PAN_INCREMENT, 0);
-        });
-        keycon.keydown(controlScheme['➡️'], e => {
             this.panViewport(PAN_INCREMENT, 0);
         });
+        keycon.keydown(controlScheme['➡️'], e => {
+            this.panViewport(-PAN_INCREMENT, 0);
+        });
         keycon.keydown(controlScheme['⬇️'], e => {
-            this.panViewport(0, PAN_INCREMENT);
+            this.panViewport(0, -PAN_INCREMENT);
         });
     }
 

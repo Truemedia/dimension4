@@ -62,18 +62,20 @@ export default class CanvasGrid extends GameGrid
         }
         let controlScheme = KEYBOARD_CONTROL_SCHEMES['ARROWS']
         const PAN_INCREMENT = 1
+        // Whether you are controlling the tiles themselves or travelling through the tiles (inverted for natural movement by default)
+        const INVERTED_CONTROLS = false
 
         keycon.keydown(controlScheme['⬆️'], e => {
-            this.panViewport(0, -PAN_INCREMENT)
+            this.panViewport(0, INVERTED_CONTROLS ? -PAN_INCREMENT : PAN_INCREMENT)
         });
         keycon.keydown(controlScheme['⬅️'], e => {
-            this.panViewport(-PAN_INCREMENT, 0)
+            this.panViewport(INVERTED_CONTROLS ? -PAN_INCREMENT : PAN_INCREMENT, 0)
         });
         keycon.keydown(controlScheme['➡️'], e => {
-            this.panViewport(PAN_INCREMENT, 0)
+            this.panViewport(INVERTED_CONTROLS ? PAN_INCREMENT : -PAN_INCREMENT, 0)
         });
         keycon.keydown(controlScheme['⬇️'], e => {
-            this.panViewport(0, PAN_INCREMENT)
+            this.panViewport(0, INVERTED_CONTROLS ? PAN_INCREMENT : -PAN_INCREMENT)
         });
     }
 
