@@ -12445,20 +12445,27 @@ class CanvasGrid extends GameGrid
                 '⬇️': 'down'
             }
         };
-        let controlScheme = KEYBOARD_CONTROL_SCHEMES['ARROWS'];
+        // Numbers of tiles to pan per button press
         const PAN_INCREMENT = 1;
+        const DEFAULT_CONTROL_SCHEMES = ['ARROWS', 'WASD'];
+        let controlSchemes = DEFAULT_CONTROL_SCHEMES;
 
-        keycon.keydown(controlScheme['⬆️'], e => {
-            this.panViewport(0, PAN_INCREMENT);
-        });
-        keycon.keydown(controlScheme['⬅️'], e => {
-            this.panViewport(PAN_INCREMENT, 0);
-        });
-        keycon.keydown(controlScheme['➡️'], e => {
-            this.panViewport(-PAN_INCREMENT, 0);
-        });
-        keycon.keydown(controlScheme['⬇️'], e => {
-            this.panViewport(0, -PAN_INCREMENT);
+        // Bind control schemes
+        Object.entries(KEYBOARD_CONTROL_SCHEMES).filter( ([schemeName, controls]) => {
+            return controlSchemes.includes(schemeName)
+        }).map( ([schemeName, controls]) => {
+            keycon.keydown(controls['⬆️'], e => {
+                this.panViewport(0, PAN_INCREMENT);
+            });
+            keycon.keydown(controls['⬅️'], e => {
+                this.panViewport(PAN_INCREMENT, 0);
+            });
+            keycon.keydown(controls['➡️'], e => {
+                this.panViewport(-PAN_INCREMENT, 0);
+            });
+            keycon.keydown(controls['⬇️'], e => {
+                this.panViewport(0, -PAN_INCREMENT);
+            });
         });
     }
 
