@@ -31,7 +31,10 @@ export default class CanvasGrid extends GameGrid
         this.zui.addLimits(0.06, 8);
         this.mouse = new Two.Vector(null, null)
 
-        this.bindings()
+        let {bindings} = this.options
+        if (bindings.length > 0) {
+            this.bindings(bindings)
+        }
     }
 
     // Pan viewport on axis (increment/decrement)
@@ -41,9 +44,13 @@ export default class CanvasGrid extends GameGrid
         )
     }
 
-    bindings() {
-        this.keyboardBindings()
-        this.mouseBindings()
+    bindings(bindings = []) {
+        if (bindings.includes('keyboard')) {
+            this.keyboardBindings()
+        }
+        if (bindings.includes('mouse')) {
+            this.mouseBindings()
+        }
     }
 
     keyboardBindings() {

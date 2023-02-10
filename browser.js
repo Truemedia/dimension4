@@ -68,7 +68,8 @@ class WorldGrid extends Grid {
 }
 
 const DEFAULTS$1 = {
-    tilePixelSize: 16
+    tilePixelSize: 16,
+    bindings: []
 };
 
 class GameGrid {
@@ -12433,7 +12434,10 @@ class CanvasGrid extends GameGrid
         this.zui.addLimits(0.06, 8);
         this.mouse = new Two.Vector(null, null);
 
-        this.bindings();
+        let {bindings} = this.options;
+        if (bindings.length > 0) {
+            this.bindings(bindings);
+        }
     }
 
     // Pan viewport on axis (increment/decrement)
@@ -12443,9 +12447,13 @@ class CanvasGrid extends GameGrid
         );
     }
 
-    bindings() {
-        this.keyboardBindings();
-        this.mouseBindings();
+    bindings(bindings = []) {
+        if (bindings.includes('keyboard')) {
+            this.keyboardBindings();
+        }
+        if (bindings.includes('mouse')) {
+            this.mouseBindings();
+        }
     }
 
     keyboardBindings() {

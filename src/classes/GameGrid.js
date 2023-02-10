@@ -3,7 +3,8 @@ import ViewportGrid from './ViewportGrid'
 import WorldGrid from './WorldGrid'
 
 const DEFAULTS = {
-    tilePixelSize: 16
+    tilePixelSize: 16,
+    bindings: []
 }
 
 export default class GameGrid {
