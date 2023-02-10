@@ -22,6 +22,8 @@
   },
   "homepage": "https://github.com/Truemedia/dimension4#readme",
   "dependencies": {
+    "keycon": "^1.4.0",
+    "three": "^0.149.0",
     "two.js": "^0.8.10"
   },
   "devDependencies": {

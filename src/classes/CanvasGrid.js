@@ -1,6 +1,7 @@
 import GameGrid from './GameGrid'
 import Two from 'two.js'
 import {ZUI} from 'two.js/extras/jsm/zui'
+import KeyController from 'keycon'
 
 const DEFAULT_TEXT_STYLES = {
     family: 'proxima-nova, sans-serif',
@@ -27,17 +28,45 @@ export default class CanvasGrid extends GameGrid
         this.zui.addLimits(0.06, 8);
         this.mouse = new Two.Vector(null, null)
 
-        this.bindEvents()
+        this.bindings()
     }
 
     // Pan viewport on axis (increment/decrement)
-    panViewport(panX, panY) {
+    panViewport(panX = 0, panY = 0) {
         this.zui.translateSurface(
             this.tileCountAsPixels(panX), this.tileCountAsPixels(panY)
         )
     }
 
-    bindEvents() {
+    bindings() {
+        this.keyboardBindings()
+        this.mouseBindings()
+    }
+
+    keyboardBindings() {
+        const keycon = new KeyController()
+
+        const PAN_INCREMENT = 1
+        const PAN_UP_KEY = 'w'
+        const PAN_LEFT_KEY = 'a'
+        const PAN_DOWN_KEY = 's'
+        const PAN_RIGHT_KEY = 'd'
+
+        keycon.keydown(PAN_UP_KEY, e => {
+            this.panViewport(0, -PAN_INCREMENT)
+        });
+        keycon.keydown(PAN_LEFT_KEY, e => {
+            this.panViewport(-PAN_INCREMENT, 0)
+        });
+        keycon.keydown(PAN_RIGHT_KEY, e => {
+            this.panViewport(PAN_INCREMENT, 0)
+        });
+        keycon.keydown(PAN_DOWN_KEY, e => {
+            this.panViewport(0, PAN_INCREMENT)
+        });
+    }
+
+    mouseBindings() {
         let onMouseDown = () => {
             this.canvas.addEventListener('mousemove', onMouseMove, false)
         }
