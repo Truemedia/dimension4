@@ -12439,15 +12439,14 @@ class CanvasGrid extends GameGrid
                 '⬇️': 's'
             },
             'ARROWS': {
-
+                '⬆️': 'up',
+                '⬅️': 'left',
+                '➡️': 'right',
+                '⬇️': 'down'
             }
         };
-        let controlScheme = KEYBOARD_CONTROL_SCHEMES['WASD'];
+        let controlScheme = KEYBOARD_CONTROL_SCHEMES['ARROWS'];
         const PAN_INCREMENT = 1;
-        // const PAN_UP_KEY = 'w'
-        // const PAN_LEFT_KEY = 'a'
-        // const PAN_DOWN_KEY = 's'
-        // const PAN_RIGHT_KEY = 'd'
 
         keycon.keydown(controlScheme['⬆️'], e => {
             this.panViewport(0, -PAN_INCREMENT);

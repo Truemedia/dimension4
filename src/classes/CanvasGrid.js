@@ -54,10 +54,13 @@ export default class CanvasGrid extends GameGrid
                 '⬇️': 's'
             },
             'ARROWS': {
-
+                '⬆️': 'up',
+                '⬅️': 'left',
+                '➡️': 'right',
+                '⬇️': 'down'
             }
         }
-        let controlScheme = KEYBOARD_CONTROL_SCHEMES['WASD']
+        let controlScheme = KEYBOARD_CONTROL_SCHEMES['ARROWS']
         const PAN_INCREMENT = 1
 
         keycon.keydown(controlScheme['⬆️'], e => {
