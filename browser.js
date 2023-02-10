@@ -12431,22 +12431,34 @@ class CanvasGrid extends GameGrid
     keyboardBindings() {
         const keycon = new KeyController$1();
 
-        const PAN_INCREMENT = 1;
-        const PAN_UP_KEY = 'w';
-        const PAN_LEFT_KEY = 'a';
-        const PAN_DOWN_KEY = 's';
-        const PAN_RIGHT_KEY = 'd';
+        const KEYBOARD_CONTROL_SCHEMES = {
+            'WASD': {
+                '⬆️': 'w',
+                '⬅️': 'a',
+                '➡️': 'd',
+                '⬇️': 's'
+            },
+            'ARROWS': {
 
-        keycon.keydown(PAN_UP_KEY, e => {
+            }
+        };
+        let controlScheme = KEYBOARD_CONTROL_SCHEMES['WASD'];
+        const PAN_INCREMENT = 1;
+        // const PAN_UP_KEY = 'w'
+        // const PAN_LEFT_KEY = 'a'
+        // const PAN_DOWN_KEY = 's'
+        // const PAN_RIGHT_KEY = 'd'
+
+        keycon.keydown(controlScheme['⬆️'], e => {
             this.panViewport(0, -PAN_INCREMENT);
         });
-        keycon.keydown(PAN_LEFT_KEY, e => {
+        keycon.keydown(controlScheme['⬅️'], e => {
             this.panViewport(-PAN_INCREMENT, 0);
         });
-        keycon.keydown(PAN_RIGHT_KEY, e => {
+        keycon.keydown(controlScheme['➡️'], e => {
             this.panViewport(PAN_INCREMENT, 0);
         });
-        keycon.keydown(PAN_DOWN_KEY, e => {
+        keycon.keydown(controlScheme['⬇️'], e => {
             this.panViewport(0, PAN_INCREMENT);
         });
     }
