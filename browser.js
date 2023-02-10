@@ -12388,6 +12388,26 @@ var KeyController = /*#__PURE__*/function (_super) {
 
 var KeyController$1 = KeyController;
 
+// Control schemes
+const DEFAULT_CONTROL_SCHEMES = {
+    'WASD': {
+        '⬆️': 'w',
+        '⬅️': 'a',
+        '➡️': 'd',
+        '⬇️': 's'
+    },
+    'ARROWS': {
+        '⬆️': 'up',
+        '⬅️': 'left',
+        '➡️': 'right',
+        '⬇️': 'down'
+    }
+};
+// Default control schemes
+const DEFAULT_ENABLED_CONTROL_SCHEMES = ['ARROWS', 'WASD'];
+// Numbers of tiles to pan per button press
+const DEFAULT_PAN_INCREMENT = 1;
+
 const DEFAULT_TEXT_STYLES = {
     family: 'proxima-nova, sans-serif',
     size: 4,
@@ -12430,41 +12450,25 @@ class CanvasGrid extends GameGrid
 
     keyboardBindings() {
         const keycon = new KeyController$1();
-
-        const KEYBOARD_CONTROL_SCHEMES = {
-            'WASD': {
-                '⬆️': 'w',
-                '⬅️': 'a',
-                '➡️': 'd',
-                '⬇️': 's'
-            },
-            'ARROWS': {
-                '⬆️': 'up',
-                '⬅️': 'left',
-                '➡️': 'right',
-                '⬇️': 'down'
-            }
-        };
-        // Numbers of tiles to pan per button press
-        const PAN_INCREMENT = 1;
-        const DEFAULT_CONTROL_SCHEMES = ['ARROWS', 'WASD'];
-        let controlSchemes = DEFAULT_CONTROL_SCHEMES;
+        
+        let controlSchemes = DEFAULT_ENABLED_CONTROL_SCHEMES;
+        let panIncrement = DEFAULT_PAN_INCREMENT;
 
         // Bind control schemes
-        Object.entries(KEYBOARD_CONTROL_SCHEMES).filter( ([schemeName, controls]) => {
+        Object.entries(DEFAULT_CONTROL_SCHEMES).filter( ([schemeName, controls]) => {
             return controlSchemes.includes(schemeName)
         }).map( ([schemeName, controls]) => {
             keycon.keydown(controls['⬆️'], e => {
-                this.panViewport(0, PAN_INCREMENT);
+                this.panViewport(0, panIncrement);
             });
             keycon.keydown(controls['⬅️'], e => {
-                this.panViewport(PAN_INCREMENT, 0);
+                this.panViewport(panIncrement, 0);
             });
             keycon.keydown(controls['➡️'], e => {
-                this.panViewport(-PAN_INCREMENT, 0);
+                this.panViewport(-panIncrement, 0);
             });
             keycon.keydown(controls['⬇️'], e => {
-                this.panViewport(0, -PAN_INCREMENT);
+                this.panViewport(0, -panIncrement);
             });
         });
     }

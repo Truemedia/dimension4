@@ -2,6 +2,9 @@ import GameGrid from './GameGrid'
 import Two from 'two.js'
 import {ZUI} from 'two.js/extras/jsm/zui'
 import KeyController from 'keycon'
+import {
+    DEFAULT_CONTROL_SCHEMES, DEFAULT_ENABLED_CONTROL_SCHEMES, DEFAULT_INVERTED_CONTROLS, DEFAULT_PAN_INCREMENT
+} from './../bindings/keyboard'
 
 const DEFAULT_TEXT_STYLES = {
     family: 'proxima-nova, sans-serif',
@@ -45,43 +48,26 @@ export default class CanvasGrid extends GameGrid
 
     keyboardBindings() {
         const keycon = new KeyController()
-
-        const KEYBOARD_CONTROL_SCHEMES = {
-            'WASD': {
-                '⬆️': 'w',
-                '⬅️': 'a',
-                '➡️': 'd',
-                '⬇️': 's'
-            },
-            'ARROWS': {
-                '⬆️': 'up',
-                '⬅️': 'left',
-                '➡️': 'right',
-                '⬇️': 'down'
-            }
-        }
-        // Numbers of tiles to pan per button press
-        const PAN_INCREMENT = 1
-        // Whether you are controlling the tiles themselves or travelling through the tiles (inverted for natural movement by default)
-        const INVERTED_CONTROLS = false
-        const DEFAULT_CONTROL_SCHEMES = ['ARROWS', 'WASD']
-        let controlSchemes = DEFAULT_CONTROL_SCHEMES
+        
+        let controlSchemes = DEFAULT_ENABLED_CONTROL_SCHEMES
+        let invertedControls = DEFAULT_INVERTED_CONTROLS
+        let panIncrement = DEFAULT_PAN_INCREMENT
 
         // Bind control schemes
-        Object.entries(KEYBOARD_CONTROL_SCHEMES).filter( ([schemeName, controls]) => {
+        Object.entries(DEFAULT_CONTROL_SCHEMES).filter( ([schemeName, controls]) => {
             return controlSchemes.includes(schemeName)
         }).map( ([schemeName, controls]) => {
             keycon.keydown(controls['⬆️'], e => {
-                this.panViewport(0, INVERTED_CONTROLS ? -PAN_INCREMENT : PAN_INCREMENT)
+                this.panViewport(0, invertedControls ? -panIncrement : panIncrement)
             });
             keycon.keydown(controls['⬅️'], e => {
-                this.panViewport(INVERTED_CONTROLS ? -PAN_INCREMENT : PAN_INCREMENT, 0)
+                this.panViewport(invertedControls ? -panIncrement : panIncrement, 0)
             });
             keycon.keydown(controls['➡️'], e => {
-                this.panViewport(INVERTED_CONTROLS ? PAN_INCREMENT : -PAN_INCREMENT, 0)
+                this.panViewport(invertedControls ? panIncrement : -panIncrement, 0)
             });
             keycon.keydown(controls['⬇️'], e => {
-                this.panViewport(0, INVERTED_CONTROLS ? PAN_INCREMENT : -PAN_INCREMENT)
+                this.panViewport(0, invertedControls ? panIncrement : -panIncrement)
             });
         })
     }
