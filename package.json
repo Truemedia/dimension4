@@ -1,6 +1,6 @@
 {
   "name": "dimension4",
-  "version": "2.2.3",
+  "version": "2.2.4",
   "description": "A node tool for dealing with advanced dimension plotting",
   "main": "node.js",
   "browser": "browser.js",

@@ -25,6 +25,10 @@ export default class Tile extends PixelGrid
         return this.isShape ? this.options.shape : null 
     }
 
+    get img() {
+        return this.isImage ? this.options.img : null
+    }
+
     get text() {
         return this.hasText ? this.options.text : null
     }
