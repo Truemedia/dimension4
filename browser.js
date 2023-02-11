@@ -12445,6 +12445,9 @@ class CanvasGrid extends GameGrid
         this.zui.translateSurface(
             this.tileCountAsPixels(panX), this.tileCountAsPixels(panY)
         );
+        this.canvas.dispatchEvent( new CustomEvent('pan', {
+            detail: {panX, panY}
+        }));
     }
 
     bindings(bindings = []) {
@@ -12566,6 +12569,10 @@ class CanvasGrid extends GameGrid
             let centrePoint = this.options.tilePixelSize / 2;
             this.drawText(message, pixelCoords, [centrePoint, centrePoint], tile.options?.textStyles);
         }
+
+        this.canvas.dispatchEvent( new CustomEvent('tile:plot', {
+            detail: {tile}
+        }));
     }
 
     line(coordsStart, coordsEnd) {
