@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- Event emitting (pan, plot tile)
+- Event emitting (pan, plot tile, image draw)
 
 ## [2.2.0] - 2022-02-11
 ### Added 

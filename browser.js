@@ -12606,6 +12606,9 @@ class CanvasGrid extends GameGrid
         let centerX = x + (width / 2);
         let centerY = y + (height / 2);
         this.stage.add( new Two.Sprite(img, centerX, centerY) );
+        this.canvas.dispatchEvent( new CustomEvent('image:draw', {
+            detail: {img, x, y, centerX, centerY}
+        }));
     }
 
     drawShape(shape, coords, dimensions) {
