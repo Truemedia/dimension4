@@ -12409,6 +12409,44 @@ const DEFAULT_ENABLED_CONTROL_SCHEMES = ['ARROWS', 'WASD'];
 // Numbers of tiles to pan per button press
 const DEFAULT_PAN_INCREMENT = 1;
 
+const CLEARED_VALUE = null;
+
+class Mouse
+{
+    constructor()
+    {
+        this.vector = new Two.Vector(CLEARED_VALUE, CLEARED_VALUE);
+    }
+
+    set coords(coords) {
+        let [x, y] = coords;
+        this.vector.x = x;
+        this.vector.y = y;
+    }
+
+    get coords() {
+        let {x, y} = this.vector;
+        return [x, y]
+    }
+
+    get x() {
+        return this.vector.x
+    }
+
+    get y() {
+        return this.vector.y
+    }
+
+    clearCoords() {
+        this.coords = Array(2).fill(CLEARED_VALUE);
+    }
+
+    get isCleared() {
+        let [x, y] = this.coords;
+        return (x === CLEARED_VALUE && y === CLEARED_VALUE)
+    }
+}
+
 const DEFAULT_TEXT_STYLES = {
     family: 'proxima-nova, sans-serif',
     size: 4,
@@ -12432,7 +12470,7 @@ class CanvasGrid extends GameGrid
         this.stage = new Two.Group();
         this.zui = new ZUI(this.stage);
         this.zui.addLimits(0.06, 8);
-        this.mouse = new Two.Vector(null, null);
+        this.mouse = new Mouse;
 
         let {bindings} = this.options;
         if (bindings.length > 0) {
@@ -12492,37 +12530,33 @@ class CanvasGrid extends GameGrid
         let onMouseUp = () => {
             this.canvas.removeEventListener('mousemove', onMouseMove, false);
 
-            this.mouse.x = null;
-            this.mouse.y = null;
+            this.mouse.clearCoords();
         };
 
         let onMouseMove = (event) =>
         {
             var rect = this.canvas.getBoundingClientRect();
             let [mouseX, mouseY] = [event.clientX - rect.left, event.clientY - rect.top];
-            if (this.mouse.x !== null && this.mouse.y !== null) {
+            if (!this.mouse.isCleared) {
                 let [panX, panY] = [mouseX - this.mouse.x, mouseY - this.mouse.y];
                 this.zui.translateSurface(panX, panY);
             }
 
-            this.mouse.x = mouseX;
-            this.mouse.y = mouseY;
+            this.mouse.coords = [mouseX, mouseY];
         };
 
         this.canvas.addEventListener('mouseenter', () => {
             this.canvas.addEventListener('mousedown', onMouseDown, false);
             this.canvas.addEventListener('mouseup', onMouseUp, false);
 
-            this.mouse.x = null;
-            this.mouse.y = null;
+            this.mouse.clearCoords();
         });
         this.canvas.addEventListener('mouseleave', () => {
             this.canvas.removeEventListener('mousedown', onMouseDown, false);
             this.canvas.removeEventListener('mouseup', onMouseUp, false);
             this.canvas.removeEventListener('mousemove', onMouseMove, false);
 
-            this.mouse.x = null;
-            this.mouse.y = null;
+            this.mouse.clearCoords();
         });
     }
 

@@ -5,6 +5,7 @@ import KeyController from 'keycon'
 import {
     DEFAULT_CONTROL_SCHEMES, DEFAULT_ENABLED_CONTROL_SCHEMES, DEFAULT_INVERTED_CONTROLS, DEFAULT_PAN_INCREMENT
 } from './../bindings/keyboard'
+import Mouse from './../bindings/mouse'
 
 const DEFAULT_TEXT_STYLES = {
     family: 'proxima-nova, sans-serif',
@@ -29,7 +30,7 @@ export default class CanvasGrid extends GameGrid
         this.stage = new Two.Group()
         this.zui = new ZUI(this.stage)
         this.zui.addLimits(0.06, 8);
-        this.mouse = new Two.Vector(null, null)
+        this.mouse = new Mouse
 
         let {bindings} = this.options
         if (bindings.length > 0) {
@@ -90,37 +91,33 @@ export default class CanvasGrid extends GameGrid
         let onMouseUp = () => {
             this.canvas.removeEventListener('mousemove', onMouseMove, false)
 
-            this.mouse.x = null
-            this.mouse.y = null
+            this.mouse.clearCoords()
         }
 
         let onMouseMove = (event) =>
         {
             var rect = this.canvas.getBoundingClientRect();
             let [mouseX, mouseY] = [event.clientX - rect.left, event.clientY - rect.top]
-            if (this.mouse.x !== null && this.mouse.y !== null) {
+            if (!this.mouse.isCleared) {
                 let [panX, panY] = [mouseX - this.mouse.x, mouseY - this.mouse.y]
                 this.zui.translateSurface(panX, panY)
             }
 
-            this.mouse.x = mouseX
-            this.mouse.y = mouseY
+            this.mouse.coords = [mouseX, mouseY]
         }
 
         this.canvas.addEventListener('mouseenter', () => {
             this.canvas.addEventListener('mousedown', onMouseDown, false)
             this.canvas.addEventListener('mouseup', onMouseUp, false)
 
-            this.mouse.x = null
-            this.mouse.y = null
+            this.mouse.clearCoords()
         })
         this.canvas.addEventListener('mouseleave', () => {
             this.canvas.removeEventListener('mousedown', onMouseDown, false)
             this.canvas.removeEventListener('mouseup', onMouseUp, false)
             this.canvas.removeEventListener('mousemove', onMouseMove, false)
 
-            this.mouse.x = null
-            this.mouse.y = null
+            this.mouse.clearCoords()
         })
     }
 
