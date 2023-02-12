@@ -89,6 +89,9 @@ export default class CanvasGrid extends GameGrid
 
         let onMouseUp = () => {
             this.canvas.removeEventListener('mousemove', onMouseMove, false)
+
+            this.mouse.x = null
+            this.mouse.y = null
         }
 
         let onMouseMove = (event) =>
@@ -107,6 +110,17 @@ export default class CanvasGrid extends GameGrid
         this.canvas.addEventListener('mouseenter', () => {
             this.canvas.addEventListener('mousedown', onMouseDown, false)
             this.canvas.addEventListener('mouseup', onMouseUp, false)
+
+            this.mouse.x = null
+            this.mouse.y = null
+        })
+        this.canvas.addEventListener('mouseleave', () => {
+            this.canvas.removeEventListener('mousedown', onMouseDown, false)
+            this.canvas.removeEventListener('mouseup', onMouseUp, false)
+            this.canvas.removeEventListener('mousemove', onMouseMove, false)
+
+            this.mouse.x = null
+            this.mouse.y = null
         })
     }
 
