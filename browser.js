@@ -12409,6 +12409,44 @@ const DEFAULT_ENABLED_CONTROL_SCHEMES = ['ARROWS', 'WASD'];
 // Numbers of tiles to pan per button press
 const DEFAULT_PAN_INCREMENT = 1;
 
+class Keyboard
+{
+    bindings(canvas, zui, tilePixelSize) {
+        const keycon = new KeyController$1();
+        
+        let controlSchemes = DEFAULT_ENABLED_CONTROL_SCHEMES;
+        let panIncrement = DEFAULT_PAN_INCREMENT;
+
+        // Pan viewport on axis (increment/decrement)
+        const panViewport = (panX = 0, panY = 0) => {
+            zui.translateSurface(
+                (tilePixelSize * panX), (tilePixelSize * panY)
+            );
+            canvas.dispatchEvent( new CustomEvent('grid:pan', {
+                detail: {panX, panY}
+            }));
+        };
+
+        // Bind control schemes
+        Object.entries(DEFAULT_CONTROL_SCHEMES).filter( ([schemeName, controls]) => {
+            return controlSchemes.includes(schemeName)
+        }).map( ([schemeName, controls]) => {
+            keycon.keydown(controls['⬆️'], e => {
+                panViewport(0, panIncrement);
+            });
+            keycon.keydown(controls['⬅️'], e => {
+                panViewport(panIncrement, 0);
+            });
+            keycon.keydown(controls['➡️'], e => {
+                panViewport(-panIncrement, 0);
+            });
+            keycon.keydown(controls['⬇️'], e => {
+                panViewport(0, -panIncrement);
+            });
+        });     
+    }
+}
+
 const CLEARED_VALUE = null;
 
 class Point
@@ -12549,6 +12587,7 @@ class CanvasGrid extends GameGrid
         this.stage = new Two.Group();
         this.zui = new ZUI(this.stage);
         this.zui.addLimits(0.06, 8);
+        this.keyboard = new Keyboard;
         this.mouse = new Mouse;
 
         let {bindings} = this.options;
@@ -12557,50 +12596,15 @@ class CanvasGrid extends GameGrid
         }
     }
 
-    // Pan viewport on axis (increment/decrement)
-    panViewport(panX = 0, panY = 0) {
-        this.zui.translateSurface(
-            this.tileCountAsPixels(panX), this.tileCountAsPixels(panY)
-        );
-        this.canvas.dispatchEvent( new CustomEvent('pan', {
-            detail: {panX, panY}
-        }));
-    }
-
     bindings(bindings = []) {
         if (bindings.includes('keyboard')) {
-            this.keyboardBindings();
+            this.keyboard.bindings(this.canvas, this.zui, this.options.tilePixelSize);
         }
         if (bindings.includes('mouse')) {
             this.mouse.bindings(this.canvas, this.zui);
         }
     }
-
-    keyboardBindings() {
-        const keycon = new KeyController$1();
-        
-        let controlSchemes = DEFAULT_ENABLED_CONTROL_SCHEMES;
-        let panIncrement = DEFAULT_PAN_INCREMENT;
-
-        // Bind control schemes
-        Object.entries(DEFAULT_CONTROL_SCHEMES).filter( ([schemeName, controls]) => {
-            return controlSchemes.includes(schemeName)
-        }).map( ([schemeName, controls]) => {
-            keycon.keydown(controls['⬆️'], e => {
-                this.panViewport(0, panIncrement);
-            });
-            keycon.keydown(controls['⬅️'], e => {
-                this.panViewport(panIncrement, 0);
-            });
-            keycon.keydown(controls['➡️'], e => {
-                this.panViewport(-panIncrement, 0);
-            });
-            keycon.keydown(controls['⬇️'], e => {
-                this.panViewport(0, -panIncrement);
-            });
-        });
-    }
-
+    
     get canvas() {
         return document.querySelector('canvas')
     }

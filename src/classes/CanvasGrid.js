@@ -5,6 +5,7 @@ import KeyController from 'keycon'
 import {
     DEFAULT_CONTROL_SCHEMES, DEFAULT_ENABLED_CONTROL_SCHEMES, DEFAULT_INVERTED_CONTROLS, DEFAULT_PAN_INCREMENT
 } from './../bindings/keyboard'
+import Keyboard from './../bindings/keyboard'
 import Mouse from './../bindings/mouse'
 
 const DEFAULT_TEXT_STYLES = {
@@ -30,6 +31,7 @@ export default class CanvasGrid extends GameGrid
         this.stage = new Two.Group()
         this.zui = new ZUI(this.stage)
         this.zui.addLimits(0.06, 8);
+        this.keyboard = new Keyboard
         this.mouse = new Mouse
 
         let {bindings} = this.options
@@ -38,51 +40,15 @@ export default class CanvasGrid extends GameGrid
         }
     }
 
-    // Pan viewport on axis (increment/decrement)
-    panViewport(panX = 0, panY = 0) {
-        this.zui.translateSurface(
-            this.tileCountAsPixels(panX), this.tileCountAsPixels(panY)
-        )
-        this.canvas.dispatchEvent( new CustomEvent('pan', {
-            detail: {panX, panY}
-        }))
-    }
-
     bindings(bindings = []) {
         if (bindings.includes('keyboard')) {
-            this.keyboardBindings()
+            this.keyboard.bindings(this.canvas, this.zui, this.options.tilePixelSize)
         }
         if (bindings.includes('mouse')) {
             this.mouse.bindings(this.canvas, this.zui)
         }
     }
-
-    keyboardBindings() {
-        const keycon = new KeyController()
-        
-        let controlSchemes = DEFAULT_ENABLED_CONTROL_SCHEMES
-        let invertedControls = DEFAULT_INVERTED_CONTROLS
-        let panIncrement = DEFAULT_PAN_INCREMENT
-
-        // Bind control schemes
-        Object.entries(DEFAULT_CONTROL_SCHEMES).filter( ([schemeName, controls]) => {
-            return controlSchemes.includes(schemeName)
-        }).map( ([schemeName, controls]) => {
-            keycon.keydown(controls['⬆️'], e => {
-                this.panViewport(0, invertedControls ? -panIncrement : panIncrement)
-            });
-            keycon.keydown(controls['⬅️'], e => {
-                this.panViewport(invertedControls ? -panIncrement : panIncrement, 0)
-            });
-            keycon.keydown(controls['➡️'], e => {
-                this.panViewport(invertedControls ? panIncrement : -panIncrement, 0)
-            });
-            keycon.keydown(controls['⬇️'], e => {
-                this.panViewport(0, invertedControls ? panIncrement : -panIncrement)
-            });
-        })
-    }
-
+    
     get canvas() {
         return document.querySelector('canvas')
     }
