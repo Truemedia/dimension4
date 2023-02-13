@@ -12555,6 +12555,11 @@ class Mouse
             this.hoverPoint.clearCoords();
             this.draggingPoint.clearCoords();
         });
+        canvas.addEventListener('click', () => {
+            canvas.dispatchEvent( new CustomEvent('tile:click', {
+                detail: {viewportCoords: this.hoverPoint.coords}
+            }));
+        });
     }
 
     // Get pixel coordinates of mouse on canvas
@@ -12607,6 +12612,11 @@ class CanvasGrid extends GameGrid
     
     get canvas() {
         return document.querySelector('canvas')
+    }
+
+    // Snap grid back into alignment
+    snapGrid() {
+
     }
 
     // Plot base tiles that fills out a radius

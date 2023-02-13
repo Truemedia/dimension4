@@ -69,6 +69,11 @@ export default class Mouse
             this.hoverPoint.clearCoords()
             this.draggingPoint.clearCoords()
         })
+        canvas.addEventListener('click', () => {
+            canvas.dispatchEvent( new CustomEvent('tile:click', {
+                detail: {viewportCoords: this.hoverPoint.coords}
+            }))
+        })
     }
 
     // Get pixel coordinates of mouse on canvas
