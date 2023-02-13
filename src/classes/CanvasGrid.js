@@ -53,7 +53,7 @@ export default class CanvasGrid extends GameGrid
             this.keyboardBindings()
         }
         if (bindings.includes('mouse')) {
-            this.mouseBindings()
+            this.mouse.bindings(this.canvas, this.zui)
         }
     }
 
@@ -80,44 +80,6 @@ export default class CanvasGrid extends GameGrid
             keycon.keydown(controls['⬇️'], e => {
                 this.panViewport(0, invertedControls ? panIncrement : -panIncrement)
             });
-        })
-    }
-
-    mouseBindings() {
-        let onMouseDown = () => {
-            this.canvas.addEventListener('mousemove', onMouseMove, false)
-        }
-
-        let onMouseUp = () => {
-            this.canvas.removeEventListener('mousemove', onMouseMove, false)
-
-            this.mouse.clearCoords()
-        }
-
-        let onMouseMove = (event) =>
-        {
-            var rect = this.canvas.getBoundingClientRect();
-            let [mouseX, mouseY] = [event.clientX - rect.left, event.clientY - rect.top]
-            if (!this.mouse.isCleared) {
-                let [panX, panY] = [mouseX - this.mouse.x, mouseY - this.mouse.y]
-                this.zui.translateSurface(panX, panY)
-            }
-
-            this.mouse.coords = [mouseX, mouseY]
-        }
-
-        this.canvas.addEventListener('mouseenter', () => {
-            this.canvas.addEventListener('mousedown', onMouseDown, false)
-            this.canvas.addEventListener('mouseup', onMouseUp, false)
-
-            this.mouse.clearCoords()
-        })
-        this.canvas.addEventListener('mouseleave', () => {
-            this.canvas.removeEventListener('mousedown', onMouseDown, false)
-            this.canvas.removeEventListener('mouseup', onMouseUp, false)
-            this.canvas.removeEventListener('mousemove', onMouseMove, false)
-
-            this.mouse.clearCoords()
         })
     }
 

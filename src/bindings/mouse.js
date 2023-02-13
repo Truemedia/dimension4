@@ -1,39 +1,79 @@
-import Two from 'two.js'
-
-const CLEARED_VALUE = null
+import Point from './../classes/Point'
 
 export default class Mouse
 {
     constructor()
     {
-        this.vector = new Two.Vector(CLEARED_VALUE, CLEARED_VALUE)
+        this.draggingPoint = new Point
+        this.hoverPoint = new Point
     }
 
-    set coords(coords) {
-        let [x, y] = coords
-        this.vector.x = x
-        this.vector.y = y
+    updateDragging(mouseEvent, canvas) {
+        let viewportCoords = this.coordsFromMouseEvent(mouseEvent)
+        this.draggingPoint.coords = viewportCoords
+        canvas.dispatchEvent( new CustomEvent('tile:drag', {
+            detail: {viewportCoords}
+        }))
     }
 
-    get coords() {
-        let {x, y} = this.vector
-        return [x, y]
+    updateHover(mouseEvent, canvas) {
+        let viewportCoords = this.coordsFromMouseEvent(mouseEvent)
+        this.hoverPoint.coords = viewportCoords
+        canvas.dispatchEvent( new CustomEvent('tile:hover', {
+            detail: {viewportCoords}
+        }))
     }
 
-    get x() {
-        return this.vector.x
+    // Initialise bindings to link to canvas element
+    bindings(canvas, zui) {
+        const onMouseDown = () => {
+            canvas.addEventListener('mousemove', onMouseDrag, false)
+        }
+
+        const onMouseUp = () => {
+            canvas.removeEventListener('mousemove', onMouseDrag, false)
+
+            this.draggingPoint.clearCoords()
+        }
+
+        const onMouseDrag = (mouseEvent) =>
+        {
+            if (!this.draggingPoint.isCleared) {
+                let [nextMouseX, nextMouseY] = this.coordsFromMouseEvent(mouseEvent)
+                let [prevMouseX, prevMouseY] = this.draggingPoint.coords
+                let [panX, panY] = [nextMouseX - prevMouseX, nextMouseY - prevMouseY]
+                zui.translateSurface(panX, panY)
+            }
+
+            this.updateDragging(mouseEvent, canvas)
+        }
+        
+        const onMouseMove = (mouseEvent) =>
+        {
+            this.updateHover(mouseEvent, canvas)
+        }
+        
+        canvas.addEventListener('mouseenter', (mouseEvent) => {
+            canvas.addEventListener('mousedown', onMouseDown, false)
+            canvas.addEventListener('mouseup', onMouseUp, false)
+            canvas.addEventListener('mousemove', onMouseMove, false)
+
+            this.updateHover(mouseEvent, canvas)
+        })
+        canvas.addEventListener('mouseleave', () => {
+            canvas.removeEventListener('mousedown', onMouseDown, false)
+            canvas.removeEventListener('mouseup', onMouseUp, false)
+            canvas.removeEventListener('mousemove', onMouseMove, false)
+            canvas.removeEventListener('mousemove', onMouseDrag, false)
+
+            this.hoverPoint.clearCoords()
+            this.draggingPoint.clearCoords()
+        })
     }
 
-    get y() {
-        return this.vector.y
-    }
-
-    clearCoords() {
-        this.coords = Array(2).fill(CLEARED_VALUE)
-    }
-
-    get isCleared() {
-        let [x, y] = this.coords
-        return (x === CLEARED_VALUE && y === CLEARED_VALUE)
+    // Get pixel coordinates of mouse on canvas
+    coordsFromMouseEvent(mouseEvent) {
+        let {offsetX, offsetY} = mouseEvent
+        return [offsetX, offsetY]
     }
 }

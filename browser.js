@@ -12411,7 +12411,7 @@ const DEFAULT_PAN_INCREMENT = 1;
 
 const CLEARED_VALUE = null;
 
-class Mouse
+class Point
 {
     constructor()
     {
@@ -12439,11 +12439,90 @@ class Mouse
 
     clearCoords() {
         this.coords = Array(2).fill(CLEARED_VALUE);
+        console.log('cleared', this.coords, this.vector);
     }
 
     get isCleared() {
         let [x, y] = this.coords;
         return (x === CLEARED_VALUE && y === CLEARED_VALUE)
+    }
+}
+
+class Mouse
+{
+    constructor()
+    {
+        this.draggingPoint = new Point;
+        this.hoverPoint = new Point;
+    }
+
+    updateDragging(mouseEvent, canvas) {
+        let viewportCoords = this.coordsFromMouseEvent(mouseEvent);
+        this.draggingPoint.coords = viewportCoords;
+        canvas.dispatchEvent( new CustomEvent('tile:drag', {
+            detail: {viewportCoords}
+        }));
+    }
+
+    updateHover(mouseEvent, canvas) {
+        let viewportCoords = this.coordsFromMouseEvent(mouseEvent);
+        this.hoverPoint.coords = viewportCoords;
+        canvas.dispatchEvent( new CustomEvent('tile:hover', {
+            detail: {viewportCoords}
+        }));
+    }
+
+    // Initialise bindings to link to canvas element
+    bindings(canvas, zui) {
+        const onMouseDown = () => {
+            canvas.addEventListener('mousemove', onMouseDrag, false);
+        };
+
+        const onMouseUp = () => {
+            canvas.removeEventListener('mousemove', onMouseDrag, false);
+
+            this.draggingPoint.clearCoords();
+        };
+
+        const onMouseDrag = (mouseEvent) =>
+        {
+            if (!this.draggingPoint.isCleared) {
+                let [nextMouseX, nextMouseY] = this.coordsFromMouseEvent(mouseEvent);
+                let [prevMouseX, prevMouseY] = this.draggingPoint.coords;
+                let [panX, panY] = [nextMouseX - prevMouseX, nextMouseY - prevMouseY];
+                zui.translateSurface(panX, panY);
+            }
+
+            this.updateDragging(mouseEvent, canvas);
+        };
+        
+        const onMouseMove = (mouseEvent) =>
+        {
+            this.updateHover(mouseEvent, canvas);
+        };
+        
+        canvas.addEventListener('mouseenter', (mouseEvent) => {
+            canvas.addEventListener('mousedown', onMouseDown, false);
+            canvas.addEventListener('mouseup', onMouseUp, false);
+            canvas.addEventListener('mousemove', onMouseMove, false);
+
+            this.updateHover(mouseEvent, canvas);
+        });
+        canvas.addEventListener('mouseleave', () => {
+            canvas.removeEventListener('mousedown', onMouseDown, false);
+            canvas.removeEventListener('mouseup', onMouseUp, false);
+            canvas.removeEventListener('mousemove', onMouseMove, false);
+            canvas.removeEventListener('mousemove', onMouseDrag, false);
+
+            this.hoverPoint.clearCoords();
+            this.draggingPoint.clearCoords();
+        });
+    }
+
+    // Get pixel coordinates of mouse on canvas
+    coordsFromMouseEvent(mouseEvent) {
+        let {offsetX, offsetY} = mouseEvent;
+        return [offsetX, offsetY]
     }
 }
 
@@ -12493,7 +12572,7 @@ class CanvasGrid extends GameGrid
             this.keyboardBindings();
         }
         if (bindings.includes('mouse')) {
-            this.mouseBindings();
+            this.mouse.bindings(this.canvas, this.zui);
         }
     }
 
@@ -12519,44 +12598,6 @@ class CanvasGrid extends GameGrid
             keycon.keydown(controls['⬇️'], e => {
                 this.panViewport(0, -panIncrement);
             });
-        });
-    }
-
-    mouseBindings() {
-        let onMouseDown = () => {
-            this.canvas.addEventListener('mousemove', onMouseMove, false);
-        };
-
-        let onMouseUp = () => {
-            this.canvas.removeEventListener('mousemove', onMouseMove, false);
-
-            this.mouse.clearCoords();
-        };
-
-        let onMouseMove = (event) =>
-        {
-            var rect = this.canvas.getBoundingClientRect();
-            let [mouseX, mouseY] = [event.clientX - rect.left, event.clientY - rect.top];
-            if (!this.mouse.isCleared) {
-                let [panX, panY] = [mouseX - this.mouse.x, mouseY - this.mouse.y];
-                this.zui.translateSurface(panX, panY);
-            }
-
-            this.mouse.coords = [mouseX, mouseY];
-        };
-
-        this.canvas.addEventListener('mouseenter', () => {
-            this.canvas.addEventListener('mousedown', onMouseDown, false);
-            this.canvas.addEventListener('mouseup', onMouseUp, false);
-
-            this.mouse.clearCoords();
-        });
-        this.canvas.addEventListener('mouseleave', () => {
-            this.canvas.removeEventListener('mousedown', onMouseDown, false);
-            this.canvas.removeEventListener('mouseup', onMouseUp, false);
-            this.canvas.removeEventListener('mousemove', onMouseMove, false);
-
-            this.mouse.clearCoords();
         });
     }
 
