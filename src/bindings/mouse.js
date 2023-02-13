@@ -6,26 +6,44 @@ export default class Mouse
     {
         this.draggingPoint = new Point
         this.hoverPoint = new Point
+        this.clickPoint = new Point
     }
 
-    updateDragging(mouseEvent, canvas) {
-        let viewportCoords = this.coordsFromMouseEvent(mouseEvent)
-        this.draggingPoint.coords = viewportCoords
+    updateDragging(mouseEvent, canvas, tilePixelSize) {
+        let pixelCoords = this.coordsFromMouseEvent(mouseEvent)
+        this.draggingPoint.coords = pixelCoords
         canvas.dispatchEvent( new CustomEvent('tile:drag', {
-            detail: {viewportCoords}
+            detail: {
+                pixelCoords,
+                viewportCoords: this.viewportCoordsFromPixelCoords(pixelCoords, tilePixelSize)
+            }
         }))
     }
 
-    updateHover(mouseEvent, canvas) {
-        let viewportCoords = this.coordsFromMouseEvent(mouseEvent)
-        this.hoverPoint.coords = viewportCoords
+    updateHover(mouseEvent, canvas, tilePixelSize) {
+        let pixelCoords = this.coordsFromMouseEvent(mouseEvent)
+        this.hoverPoint.coords = pixelCoords
         canvas.dispatchEvent( new CustomEvent('tile:hover', {
-            detail: {viewportCoords}
+            detail: {
+                pixelCoords,
+                viewportCoords: this.viewportCoordsFromPixelCoords(pixelCoords, tilePixelSize)
+            }
+        }))
+    }
+
+    updateClick(mouseEvent, canvas, tilePixelSize) {
+        let pixelCoords = this.coordsFromMouseEvent(mouseEvent)
+        this.clickPoint.coords = pixelCoords
+        canvas.dispatchEvent( new CustomEvent('tile:click', {
+            detail: {
+                pixelCoords,
+                viewportCoords: this.viewportCoordsFromPixelCoords(pixelCoords, tilePixelSize)
+            }
         }))
     }
 
     // Initialise bindings to link to canvas element
-    bindings(canvas, zui) {
+    bindings(canvas, tilePixelSize, zui = null) {
         const onMouseDown = () => {
             canvas.addEventListener('mousemove', onMouseDrag, false)
         }
@@ -45,12 +63,12 @@ export default class Mouse
                 zui.translateSurface(panX, panY)
             }
 
-            this.updateDragging(mouseEvent, canvas)
+            this.updateDragging(mouseEvent, canvas, tilePixelSize)
         }
         
         const onMouseMove = (mouseEvent) =>
         {
-            this.updateHover(mouseEvent, canvas)
+            this.updateHover(mouseEvent, canvas, tilePixelSize)
         }
         
         canvas.addEventListener('mouseenter', (mouseEvent) => {
@@ -58,7 +76,7 @@ export default class Mouse
             canvas.addEventListener('mouseup', onMouseUp, false)
             canvas.addEventListener('mousemove', onMouseMove, false)
 
-            this.updateHover(mouseEvent, canvas)
+            this.updateHover(mouseEvent, canvas, tilePixelSize)
         })
         canvas.addEventListener('mouseleave', () => {
             canvas.removeEventListener('mousedown', onMouseDown, false)
@@ -69,10 +87,8 @@ export default class Mouse
             this.hoverPoint.clearCoords()
             this.draggingPoint.clearCoords()
         })
-        canvas.addEventListener('click', () => {
-            canvas.dispatchEvent( new CustomEvent('tile:click', {
-                detail: {viewportCoords: this.hoverPoint.coords}
-            }))
+        canvas.addEventListener('click', (mouseEvent) => {
+            this.updateClick(mouseEvent, canvas, tilePixelSize)
         })
     }
 
@@ -80,5 +96,12 @@ export default class Mouse
     coordsFromMouseEvent(mouseEvent) {
         let {offsetX, offsetY} = mouseEvent
         return [offsetX, offsetY]
+    }
+
+    viewportCoordsFromPixelCoords(pixelCoords, tilePixelSize) {
+        let [x, y] = pixelCoords
+        return [
+            Math.floor(x / tilePixelSize), Math.floor(y / tilePixelSize)
+        ]
     }
 }

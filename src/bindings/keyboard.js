@@ -24,7 +24,7 @@ export const DEFAULT_PAN_INCREMENT = 1
 
 export default class Keyboard
 {
-    bindings(canvas, zui, tilePixelSize) {
+    bindings(canvas, tilePixelSize, zui = null) {
         const keycon = new KeyController()
         
         let controlSchemes = DEFAULT_ENABLED_CONTROL_SCHEMES

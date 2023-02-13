@@ -30,7 +30,6 @@ export default class Point
 
     clearCoords() {
         this.coords = Array(2).fill(CLEARED_VALUE)
-        console.log('cleared', this.coords, this.vector)
     }
 
     get isCleared() {

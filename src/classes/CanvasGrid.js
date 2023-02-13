@@ -37,16 +37,24 @@ export default class CanvasGrid extends GameGrid
     }
 
     bindings(bindings = []) {
+        let {canvas, zui} = this
+        let {tilePixelSize} = this.options
+
         if (bindings.includes('keyboard')) {
-            this.keyboard.bindings(this.canvas, this.zui, this.options.tilePixelSize)
+            this.keyboard.bindings(canvas, tilePixelSize, zui)
         }
         if (bindings.includes('mouse')) {
-            this.mouse.bindings(this.canvas, this.zui)
+            this.mouse.bindings(canvas, tilePixelSize, zui)
         }
     }
     
     get canvas() {
         return document.querySelector('canvas')
+    }
+
+    // Snap grid back into alignment
+    snapGrid() {
+
     }
 
     // Plot base tiles that fills out a radius
