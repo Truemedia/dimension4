@@ -1,10 +1,6 @@
 import GameGrid from './GameGrid'
 import Two from 'two.js'
 import {ZUI} from 'two.js/extras/jsm/zui'
-import KeyController from 'keycon'
-import {
-    DEFAULT_CONTROL_SCHEMES, DEFAULT_ENABLED_CONTROL_SCHEMES, DEFAULT_INVERTED_CONTROLS, DEFAULT_PAN_INCREMENT
-} from './../bindings/keyboard'
 import Keyboard from './../bindings/keyboard'
 import Mouse from './../bindings/mouse'
 
