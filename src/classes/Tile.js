@@ -21,6 +21,10 @@ export default class Tile extends PixelGrid
         return [worldX, worldY]
     }
 
+    get color() {
+        return this.isColor ? this.options.color : null
+    }
+
     get shape() {
         return this.isShape ? this.options.shape : null 
     }
@@ -41,15 +45,44 @@ export default class Tile extends PixelGrid
         return this.options?.border ?? false
     }
 
+    hasOption(option) {
+        return Object.keys(this.options).includes(option)
+    }
+
     get hasText() {
         return (typeof this.options?.text === 'string') ?? false
     }
 
+    get isColor() {
+        return this.hasOption('color')
+    }
+
     get isShape() {
-        return Object.keys(this.options).includes('shape')
+        return this.hasOption('shape')
     }
 
     get isImage() {
-        return Object.keys(this.options).includes('img')
+        return this.hasOption('img')
+    }
+
+    get type() {
+        let type = null
+
+        switch (true) {
+            // Color
+            case this.isColor:
+                type = 'color'
+            break;
+            // Image
+            case this.isImage:
+                type = 'image'
+            break;
+            // Shape
+            case this.isShape:
+                type = 'shape'
+            break;
+        }
+
+        return type
     }
 }

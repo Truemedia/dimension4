@@ -3,6 +3,7 @@ import Two from 'two.js'
 import {ZUI} from 'two.js/extras/jsm/zui'
 import Keyboard from './../bindings/keyboard'
 import Mouse from './../bindings/mouse'
+import ShapeFactory from '../factories/ShapeFactory'
 
 const DEFAULT_TEXT_STYLES = {
     family: 'proxima-nova, sans-serif',
@@ -52,11 +53,6 @@ export default class CanvasGrid extends GameGrid
         return document.querySelector('canvas')
     }
 
-    // Snap grid back into alignment
-    snapGrid() {
-
-    }
-
     // Plot base tiles that fills out a radius
     plotBaseTiles(tile) {
         let {minX, minY, maxX, maxY} = this.worldGrid
@@ -84,10 +80,17 @@ export default class CanvasGrid extends GameGrid
             this.viewportCoordsFromWorldCoords(worldCoords)
         )
         
-        if (tile.isShape) {
-            this.drawShape(tile.shape, pixelCoords, tileDimensions)
-        } else if (tile.isImage) {
-            this.drawImage(tile.img, pixelCoords, tileDimensions)
+        // Draw tile
+        switch (tile.type) {
+            case 'color':
+                this.drawColor(tile.color, pixelCoords, tileDimensions)
+            break;
+            case 'image':
+                this.drawImage(tile.img, pixelCoords, tileDimensions)
+            break;
+            case 'shape':
+                this.drawShape(tile.shape, pixelCoords, tileDimensions)
+            break;
         }
         
         if (tile.hasBorder) {
@@ -141,6 +144,11 @@ export default class CanvasGrid extends GameGrid
         })
     }
 
+    drawColor(color, coords, dimensions) {
+        let shape = 'rectangle'
+        this.drawShape(shape, coords, dimensions, {fill: color})
+    }
+
     drawImage(img, coords, dimensions) {
         let [x, y] = coords
         let [width, height] = dimensions
@@ -152,7 +160,7 @@ export default class CanvasGrid extends GameGrid
         }))
     }
 
-    drawShape(shape, coords, dimensions) {
+    drawShape(shape, coords, dimensions, shapeOptions = {}) {
         let [x, y] = coords
         let [width, height] = dimensions
         let centerX = x + (width / 2)
@@ -160,7 +168,7 @@ export default class CanvasGrid extends GameGrid
 
         switch (shape) {
             case 'rectangle':
-                this.stage.add( new Two.Rectangle(centerX, centerY, ...dimensions) )
+                this.stage.add( ShapeFactory.rectangle([centerX, centerY], dimensions, shapeOptions) )
             break;
         }
     }
