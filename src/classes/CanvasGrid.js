@@ -26,9 +26,9 @@ export default class CanvasGrid extends GameGrid
         })
         this.stage = new Two.Group()
         this.zui = new ZUI(this.stage)
-        this.zui.addLimits(0.06, 8);
+        this.zui.addLimits(0, 0);
         this.keyboard = new Keyboard
-        this.mouse = new Mouse
+        this.mouse = new Mouse({snapToGrid: true})
 
         let {bindings} = this.options
         if (bindings.length > 0) {
