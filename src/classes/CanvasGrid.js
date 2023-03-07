@@ -11,6 +11,7 @@ const DEFAULT_TEXT_STYLES = {
     leading: 50,
     weight: 900
 }
+const DEFAULT_SHAPE = 'rectangle'
 
 export default class CanvasGrid extends GameGrid
 {
@@ -74,6 +75,7 @@ export default class CanvasGrid extends GameGrid
     }
 
     plotTile(tile) {
+        console.log('tt', tile)
         let {worldCoords} = tile
         let {tileDimensions} = this
         let pixelCoords = this.pixelCoordsFromViewportCoords(
@@ -83,7 +85,7 @@ export default class CanvasGrid extends GameGrid
         // Draw tile
         switch (tile.type) {
             case 'color':
-                this.drawColor(tile.color, pixelCoords, tileDimensions)
+                this.drawColor(tile.color, pixelCoords, tileDimensions, tile?.shape)
             break;
             case 'image':
                 this.drawImage(tile.img, pixelCoords, tileDimensions)
@@ -144,9 +146,8 @@ export default class CanvasGrid extends GameGrid
         })
     }
 
-    drawColor(color, coords, dimensions) {
-        let shape = 'rectangle'
-        this.drawShape(shape, coords, dimensions, {fill: color})
+    drawColor(color, coords, dimensions, shape = null) {
+        this.drawShape(shape ?? DEFAULT_SHAPE, coords, dimensions, {fill: color})
     }
 
     drawImage(img, coords, dimensions) {

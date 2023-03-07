@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Event emitting (pan, plot tile, image draw, click)
 - Grid snapping on mouse drag option
+- Color drawing
 ### Fixed
 - Tile image path
 - Mouse movement
