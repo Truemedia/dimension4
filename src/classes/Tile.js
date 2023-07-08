@@ -12,13 +12,13 @@ export default class Tile extends PixelGrid
     }
 
     set worldCoords(worldCoords) {
-        let [worldX, worldY] = worldCoords
-        Object.assign(this.options, {worldX, worldY})
+        let [x, y] = worldCoords
+        Object.assign(this.options, {worldCoords: {x, y}})
     }
 
     get worldCoords() {
-        let {worldX, worldY} = this.options
-        return [worldX, worldY]
+        let {worldCoords} = this.options
+        return worldCoords
     }
 
     get color() {

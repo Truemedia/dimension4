@@ -4,6 +4,7 @@ import {ZUI} from 'two.js/extras/jsm/zui'
 import Keyboard from './../bindings/keyboard'
 import Mouse from './../bindings/mouse'
 import ShapeFactory from '../factories/ShapeFactory'
+import TilesetFactory from '../factories/TilesetFactory'
 
 const DEFAULT_TEXT_STYLES = {
     family: 'proxima-nova, sans-serif',
@@ -30,12 +31,15 @@ export default class CanvasGrid extends GameGrid
         this.zui = new ZUI(this.stage)
         this.zui.addLimits(0, 0);
         this.keyboard = new Keyboard
-        this.mouse = new Mouse({snapToGrid: true})
+        this.mouse = new Mouse({snapToGrid: true, spawnWorldCoords: this.spawnWorldCoords})
 
         let {bindings} = this.options
         if (bindings.length > 0) {
             this.bindings(bindings)
         }
+
+        TilesetFactory.alternateColors(5)
+        // console.log(TilesetFactory.checkered(4))
     }
 
     bindings(bindings = []) {
@@ -75,12 +79,13 @@ export default class CanvasGrid extends GameGrid
     }
 
     plotTile(tile) {
-        console.log('tt', tile)
         let {worldCoords} = tile
         let {tileDimensions} = this
         let pixelCoords = this.pixelCoordsFromViewportCoords(
             this.viewportCoordsFromWorldCoords(worldCoords)
         )
+
+        console.log('px2', this.viewportCoordsFromWorldCoords(worldCoords))
         
         // Draw tile
         switch (tile.type) {
@@ -98,9 +103,10 @@ export default class CanvasGrid extends GameGrid
         if (tile.hasBorder) {
             this.drawBorder(pixelCoords, tileDimensions)
         }
+        console.log('why tile', tile)
         if (tile.hasText) {
             // Use coords as default message if blank string
-            let debugCoordsType = 'pixel'
+            let debugCoordsType = 'world'
             let debugCoords = null
             switch (debugCoordsType) {
                 case 'pixel':
@@ -111,8 +117,9 @@ export default class CanvasGrid extends GameGrid
                 break;
             }
 
-            let message = (tile.text !== '') ? tile.text : debugCoords.join(', ')
+            let message = (tile.text !== '') ? tile.text : Object.values(debugCoords).join(', ')
             let centrePoint = this.options.tilePixelSize / 2
+            console.log('pixels', pixelCoords)
             this.drawText(message, pixelCoords, [centrePoint, centrePoint], tile.options?.textStyles)
         }
 
@@ -123,6 +130,10 @@ export default class CanvasGrid extends GameGrid
 
     line(coordsStart, coordsEnd) {
         return new Two.Line(coordsStart, coordsEnd)
+    }
+
+    addToStage(shape) {
+        this.stage.add(shape)
     }
 
     drawBorder(coords, dimensions) {
@@ -162,19 +173,20 @@ export default class CanvasGrid extends GameGrid
     }
 
     drawShape(shape, coords, dimensions, shapeOptions = {}) {
-        let [x, y] = coords
-        let [width, height] = dimensions
-        let centerX = x + (width / 2)
-        let centerY = y + (height / 2)
+        // let [x, y] = coords
+        // let [width, height] = dimensions
+        // let centerX = x + (width / 2)
+        // let centerY = y + (height / 2)
 
-        switch (shape) {
-            case 'rectangle':
-                this.stage.add( ShapeFactory.rectangle([centerX, centerY], dimensions, shapeOptions) )
-            break;
-        }
+        // switch (shape) {
+        //     case 'rectangle':
+        //         this.stage.add( ShapeFactory.rectangle([centerX, centerY], dimensions, shapeOptions) )
+        //     break;
+        // }
     }
     
     drawText(message, coords, offsetCoords, textStyles) {
+        console.log('coords why', coords)
         let [x, y] = coords
         let [offsetX, offsetY] = offsetCoords
         x += offsetX
