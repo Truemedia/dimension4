@@ -12658,7 +12658,6 @@ class Mouse
         // Viewport
         // Offset
         let [viewportX, viewportY] = viewportCoords;
-        console.log('viewport zui offset', viewportZuiOffset);
         let [zOffsetX, zOffsetY] = viewportZuiOffset;
         // Spawn (is top left most tile so not needed if is 0,0)
         this.spawnPoint.coords;
