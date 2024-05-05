@@ -1,3 +1,5 @@
+const DEFAULT_COLORS = ['black', 'white']
+
 export default class TilesetFactory
 {
     /**

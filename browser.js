@@ -179,7 +179,7 @@ class GameGrid {
     }
 
     viewportCoordsFromWorldCoords(worldCoords) {
-        console.log('wc', worldCoords);
+        // console.log('wc', worldCoords)
         let {x, y} = worldCoords;
 
         let [worldX, worldY] = this.worldCoordsAfterOffset;
@@ -12651,9 +12651,9 @@ class Mouse
         console.log('viewport zui offset', viewportZuiOffset);
         let [zOffsetX, zOffsetY] = viewportZuiOffset;
         // Spawn (is top left most tile so not needed if is 0,0)
-        let [spawnX, spawnY] = this.spawnPoint.coords;
+        this.spawnPoint.coords;
 
-        console.log('x', viewportX, zOffsetX, spawnX);
+        // console.log('x', viewportX, zOffsetX, spawnX)
         let worldPoint = new Point;
         worldPoint.coords = [
             viewportX - zOffsetX, viewportY - zOffsetY
@@ -12661,6 +12661,8 @@ class Mouse
         return worldPoint
     }
 }
+
+const DEFAULT_COLORS = ['black', 'white'];
 
 class TilesetFactory
 {
@@ -12771,7 +12773,7 @@ class CanvasGrid extends GameGrid
             this.viewportCoordsFromWorldCoords(worldCoords)
         );
 
-        console.log('px2', this.viewportCoordsFromWorldCoords(worldCoords));
+        // console.log('px2', this.viewportCoordsFromWorldCoords(worldCoords))
         
         // Draw tile
         switch (tile.type) {
@@ -12789,7 +12791,7 @@ class CanvasGrid extends GameGrid
         if (tile.hasBorder) {
             this.drawBorder(pixelCoords, tileDimensions);
         }
-        console.log('why tile', tile);
+        // console.log('why tile', tile)
         if (tile.hasText) {
             // Use coords as default message if blank string
             let debugCoordsType = 'world';
@@ -12805,7 +12807,7 @@ class CanvasGrid extends GameGrid
 
             let message = (tile.text !== '') ? tile.text : Object.values(debugCoords).join(', ');
             let centrePoint = this.options.tilePixelSize / 2;
-            console.log('pixels', pixelCoords);
+            // console.log('pixels', pixelCoords)
             this.drawText(message, pixelCoords, [centrePoint, centrePoint], tile.options?.textStyles);
         }
 
@@ -12872,7 +12874,7 @@ class CanvasGrid extends GameGrid
     }
     
     drawText(message, coords, offsetCoords, textStyles) {
-        console.log('coords why', coords);
+        // console.log('coords why', coords)
         let [x, y] = coords;
         let [offsetX, offsetY] = offsetCoords;
         x += offsetX;
