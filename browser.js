@@ -12540,13 +12540,16 @@ class Mouse
         }));
     }
 
-    updateClick(mouseEvent, canvas, tilePixelSize) {
+    updateClick(mouseEvent, canvas, tilePixelSize, viewportOffset) {
         let pixelCoords = this.coordsFromMouseEvent(mouseEvent);
+        let viewportCoords = this.viewportCoordsFromPixelCoords(pixelCoords, tilePixelSize);
         this.clickPoint.coords = pixelCoords;
+
         canvas.dispatchEvent( new CustomEvent('tile:click', {
             detail: {
                 pixelCoords,
-                viewportCoords: this.viewportCoordsFromPixelCoords(pixelCoords, tilePixelSize)
+                viewportCoords,
+                worldCoords: this.worldPoint(viewportOffset, viewportCoords)
             }
         }));
     }
@@ -12612,7 +12615,11 @@ class Mouse
             this.draggingPoint.clearCoords();
         });
         canvas.addEventListener('click', (mouseEvent) => {
-            this.updateClick(mouseEvent, canvas, tilePixelSize);
+            let {position} = zui.surfaces[0].object;
+            let {x, y} = position;
+            let zuiTileOffset = this.viewportCoordsFromPixelCoords([x, y], tilePixelSize);
+
+            this.updateClick(mouseEvent, canvas, tilePixelSize, zuiTileOffset);
         });
     }
 
