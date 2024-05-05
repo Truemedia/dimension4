@@ -12596,8 +12596,11 @@ class Mouse
             canvas.addEventListener('mousedown', onMouseDown, false);
             canvas.addEventListener('mouseup', onMouseUp, false);
             canvas.addEventListener('mousemove', onMouseMove, false);
-
-            this.updateHover(mouseEvent, canvas, tilePixelSize);
+            
+            let {position} = zui.surfaces[0].object;
+            let {x, y} = position;
+            let zuiTileOffset = this.viewportCoordsFromPixelCoords([x, y], tilePixelSize);
+            this.updateHover(mouseEvent, canvas, tilePixelSize, zuiTileOffset);
         });
         canvas.addEventListener('mouseleave', () => {
             canvas.removeEventListener('mousedown', onMouseDown, false);
