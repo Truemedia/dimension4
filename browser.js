@@ -12515,13 +12515,16 @@ class Mouse
         }
     }
 
-    updateDragging(mouseEvent, canvas, tilePixelSize) {
+    updateDragging(mouseEvent, canvas, tilePixelSize, viewportOffset) {
         let pixelCoords = this.coordsFromMouseEvent(mouseEvent);
+        let viewportCoords = this.viewportCoordsFromPixelCoords(pixelCoords, tilePixelSize);
         this.draggingPoint.coords = pixelCoords;
+
         canvas.dispatchEvent( new CustomEvent('tile:drag', {
             detail: {
                 pixelCoords,
-                viewportCoords: this.viewportCoordsFromPixelCoords(pixelCoords, tilePixelSize)
+                viewportCoords,
+                worldCoords: this.worldPoint(viewportOffset, viewportCoords)
             }
         }));
     }
@@ -12584,7 +12587,11 @@ class Mouse
                 zui.translateSurface(panX, panY);
             }
 
-            this.updateDragging(mouseEvent, canvas, tilePixelSize);
+            let {position} = zui.surfaces[0].object;
+            let {x, y} = position;
+            let zuiTileOffset = this.viewportCoordsFromPixelCoords([x, y], tilePixelSize);
+
+            this.updateDragging(mouseEvent, canvas, tilePixelSize, zuiTileOffset);
         };
         
         const onMouseMove = (mouseEvent) =>
