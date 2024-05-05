@@ -85,7 +85,7 @@ export default class CanvasGrid extends GameGrid
             this.viewportCoordsFromWorldCoords(worldCoords)
         )
 
-        console.log('px2', this.viewportCoordsFromWorldCoords(worldCoords))
+        // console.log('px2', this.viewportCoordsFromWorldCoords(worldCoords))
         
         // Draw tile
         switch (tile.type) {
@@ -103,7 +103,7 @@ export default class CanvasGrid extends GameGrid
         if (tile.hasBorder) {
             this.drawBorder(pixelCoords, tileDimensions)
         }
-        console.log('why tile', tile)
+        // console.log('why tile', tile)
         if (tile.hasText) {
             // Use coords as default message if blank string
             let debugCoordsType = 'world'
@@ -119,7 +119,7 @@ export default class CanvasGrid extends GameGrid
 
             let message = (tile.text !== '') ? tile.text : Object.values(debugCoords).join(', ')
             let centrePoint = this.options.tilePixelSize / 2
-            console.log('pixels', pixelCoords)
+            // console.log('pixels', pixelCoords)
             this.drawText(message, pixelCoords, [centrePoint, centrePoint], tile.options?.textStyles)
         }
 
@@ -186,7 +186,7 @@ export default class CanvasGrid extends GameGrid
     }
     
     drawText(message, coords, offsetCoords, textStyles) {
-        console.log('coords why', coords)
+        // console.log('coords why', coords)
         let [x, y] = coords
         let [offsetX, offsetY] = offsetCoords
         x += offsetX

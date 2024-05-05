@@ -114,7 +114,7 @@ export default class GameGrid {
     }
 
     viewportCoordsFromWorldCoords(worldCoords) {
-        console.log('wc', worldCoords)
+        // console.log('wc', worldCoords)
         let {x, y} = worldCoords
 
         let [worldX, worldY] = this.worldCoordsAfterOffset

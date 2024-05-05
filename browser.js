@@ -1,9 +1,3 @@
-class Board {
-    constructor() {
-        
-    }
-}
-
 class Grid {
     constructor(options)
     {
@@ -347,7 +341,7 @@ __export(curves_exports, {
 });
 
 // src/events.js
-var Events$1 = class {
+var Events$1 = class Events {
   constructor() {
     __publicField(this, "_events", {});
     __publicField(this, "_bound", false);
@@ -11558,6 +11552,18 @@ repository: https://github.com/daybrush/utils
 @version 1.10.2
 */
 /**
+* @namespace
+* @name Consts
+*/
+/**
+* get string "rgb"
+* @memberof Color
+* @example
+import {RGB} from "@daybrush/utils";
+
+console.log(RGB); // "rgb"
+*/
+/**
 * get string "object"
 * @memberof Consts
 * @example
@@ -11963,8 +11969,6 @@ function () {
 
   return EventEmitter;
 }();
-
-var EventEmitter$1 = EventEmitter;
 
 /*
 Copyright (c) Daybrush
@@ -12392,9 +12396,7 @@ var KeyController = /*#__PURE__*/function (_super) {
     combi.length > 1 && this.trigger("".concat(type, ".").concat(combi.join(".")), param);
   };
   return KeyController;
-}(EventEmitter$1);
-
-var KeyController$1 = KeyController;
+}(EventEmitter);
 
 // Control schemes
 const DEFAULT_CONTROL_SCHEMES = {
@@ -12419,7 +12421,7 @@ const DEFAULT_PAN_INCREMENT = 1;
 class Keyboard
 {
     bindings(canvas, tilePixelSize, zui = null) {
-        const keycon = new KeyController$1();
+        const keycon = new KeyController();
         
         let controlSchemes = DEFAULT_ENABLED_CONTROL_SCHEMES;
         let panIncrement = DEFAULT_PAN_INCREMENT;
@@ -12646,8 +12648,9 @@ class Mouse
         // Viewport
         // Offset
         let [viewportX, viewportY] = viewportCoords;
+        console.log('viewport zui offset', viewportZuiOffset);
         let [zOffsetX, zOffsetY] = viewportZuiOffset;
-        // Spawn
+        // Spawn (is top left most tile so not needed if is 0,0)
         let [spawnX, spawnY] = this.spawnPoint.coords;
 
         console.log('x', viewportX, zOffsetX, spawnX);
@@ -12658,95 +12661,6 @@ class Mouse
         return worldPoint
     }
 }
-
-const DEFAULTS = {
-    border: true,
-    max: 16
-};
-
-class Tile extends PixelGrid
-{
-    constructor(options) {
-        super( Object.assign({}, DEFAULTS, options) );
-    }
-
-    set worldCoords(worldCoords) {
-        let [x, y] = worldCoords;
-        Object.assign(this.options, {worldCoords: {x, y}});
-    }
-
-    get worldCoords() {
-        let {worldCoords} = this.options;
-        return worldCoords
-    }
-
-    get color() {
-        return this.isColor ? this.options.color : null
-    }
-
-    get shape() {
-        return this.isShape ? this.options.shape : null 
-    }
-
-    get img() {
-        return this.isImage ? this.options.img : null
-    }
-
-    get text() {
-        return this.hasText ? this.options.text : null
-    }
-
-    set text(text) {
-        this.options.text = text;
-    }
-
-    get hasBorder() {
-        return this.options?.border ?? false
-    }
-
-    hasOption(option) {
-        return Object.keys(this.options).includes(option)
-    }
-
-    get hasText() {
-        return (typeof this.options?.text === 'string') ?? false
-    }
-
-    get isColor() {
-        return this.hasOption('color')
-    }
-
-    get isShape() {
-        return this.hasOption('shape')
-    }
-
-    get isImage() {
-        return this.hasOption('img')
-    }
-
-    get type() {
-        let type = null;
-
-        switch (true) {
-            // Color
-            case this.isColor:
-                type = 'color';
-            break;
-            // Image
-            case this.isImage:
-                type = 'image';
-            break;
-            // Shape
-            case this.isShape:
-                type = 'shape';
-            break;
-        }
-
-        return type
-    }
-}
-
-const DEFAULT_COLORS = ['black', 'white'];
 
 class TilesetFactory
 {
@@ -12972,19 +12886,90 @@ class CanvasGrid extends GameGrid
     }
 }
 
-class SquareBoard extends Board
+const DEFAULTS = {
+    border: true,
+    max: 16
+};
+
+class Tile extends PixelGrid
 {
-    constructor()
-    {
-        super();
-        this.grid = new CanvasGrid(
-            {
-                tilePixelSize: 64,
-                viewportTiles: [4, 4],
-                worldTiles: [0, 4],
-                bindings: ['keyboard', 'mouse']
-            }
-        );
+    constructor(options) {
+        super( Object.assign({}, DEFAULTS, options) );
+    }
+
+    set worldCoords(worldCoords) {
+        let [x, y] = worldCoords;
+        Object.assign(this.options, {worldCoords: {x, y}});
+    }
+
+    get worldCoords() {
+        let {worldCoords} = this.options;
+        return worldCoords
+    }
+
+    get color() {
+        return this.isColor ? this.options.color : null
+    }
+
+    get shape() {
+        return this.isShape ? this.options.shape : null 
+    }
+
+    get img() {
+        return this.isImage ? this.options.img : null
+    }
+
+    get text() {
+        return this.hasText ? this.options.text : null
+    }
+
+    set text(text) {
+        this.options.text = text;
+    }
+
+    get hasBorder() {
+        return this.options?.border ?? false
+    }
+
+    hasOption(option) {
+        return Object.keys(this.options).includes(option)
+    }
+
+    get hasText() {
+        return (typeof this.options?.text === 'string') ?? false
+    }
+
+    get isColor() {
+        return this.hasOption('color')
+    }
+
+    get isShape() {
+        return this.hasOption('shape')
+    }
+
+    get isImage() {
+        return this.hasOption('img')
+    }
+
+    get type() {
+        let type = null;
+
+        switch (true) {
+            // Color
+            case this.isColor:
+                type = 'color';
+            break;
+            // Image
+            case this.isImage:
+                type = 'image';
+            break;
+            // Shape
+            case this.isShape:
+                type = 'shape';
+            break;
+        }
+
+        return type
     }
 }
 
@@ -12993,240 +12978,4 @@ class TileMap
 
 }
 
-class Player
-{
-    constructor(human = false, controllable = false) {
-        this.human = human;
-        this.controllable = controllable;
-        this.gamePiece = null;
-    }
-}
-
-class AiPlayer extends Player
-{
-    constructor(human = false, controllable = false)
-    {
-        super(human, controllable);
-    }
-}
-
-class HumanPlayer extends Player
-{
-    constructor(human = true, controllable = true)
-    {
-        super(human, controllable);
-    }
-}
-
-class Phase
-{
-    
-}
-
-class Turn
-{
-    constructor(phases = [], tile)
-    {
-        this.phases = phases.length > 0 ? phases : [new Phase];
-        this.tile = tile;
-    }
-}
-
-const DEFAULT_LOCKED = true;
-
-class GameConcept
-{
-    constructor() {
-        this.players = [];
-        // this.makeBoard()
-        this.allocatePlayers();
-        this.board = null;
-        this.sb = new SquareBoard;
-        this.locked = DEFAULT_LOCKED;
-        this.turns = [];
-    }
-
-    get activePlayer()
-    {
-        return this.playerByNumber( this.playerNumberByTurnNumber(this.numberOfTurns) )
-    }
-
-    startGame()
-    {
-        this.iterateTurn();
-    }
-
-    playerByNumber(n)
-    {
-        return this.players[n - 1]
-    }
-
-    playerNumberByTurnNumber(turnNumber)
-    {
-        let {numberOfPlayers} = this;
-        let roundNumber = this.roundNumber(numberOfPlayers, turnNumber);
-
-        return numberOfPlayers - (this.finalTurnOfRoundNumber(roundNumber, numberOfPlayers) - turnNumber)
-    }
-
-    finalTurnOfRoundNumber(roundNumber, numberOfPlayers)
-    {
-        return (roundNumber * numberOfPlayers)
-    }
-
-    roundNumber(numberOfPlayers, numberOfTurns)
-    {
-        return Math.ceil(numberOfTurns / numberOfPlayers)
-    }
-
-    get numberOfRounds()
-    {
-        let {numberOfPlayers, numberOfTurns} = this;
-
-        return this.roundNumber(numberOfPlayers, numberOfTurns)
-    }
-
-    get numberOfTurns()
-    {
-        return this.turns.length
-    }
-
-    get previousTurn() {
-        return (this.turns.length > 0) ? this.turns[this.turns.length - 1] : null
-    }
-
-    get nextTurn() {
-        return new Turn([], )
-    }
-    
-    get currentTurn() {
-        return (this.turns.length > 0) ? this.turns[this.turns.length] : null
-    }
-
-    takeTurn(turn)
-    {
-        let {tile} = turn;
-        this.turns.push(turn);
-        if (tile !== undefined) {
-            this.sb.grid.plotTile(tile);
-        }
-    }
-
-    iterateTurn()
-    {
-        this.takeTurn(this.nextTurn);
-        
-        let {activePlayer} = this;
-        if (activePlayer?.controllable && activePlayer?.human) {
-            this.unlock();
-        } else {
-            this.lock();
-        }
-    }
-
-    allocatePlayers(players = [])
-    {
-        this.allocatePlayer( new HumanPlayer );
-        while (this.numberOfPlayers > this.players.length) {
-            this.players.push(new AiPlayer);
-        }
-    }
-
-    allocatePlayer(player)
-    {
-        this.players.push(player);
-    }
-
-    get isLocked() {
-        return this.locked
-    }
-
-    lock() {
-        this.locked = true;
-    }
-
-    unlock() {
-        this.locked = false;
-    }
-
-    get rows() {
-        return this.isBoardGame ? this.boardMatrix.length : null
-    }
-
-    get columns() {
-        if (this.isBoardGame) {
-            let [columnCount] = this.boardMatrix.map( (columns) => columns.length);
-            return columnCount
-        } else {
-            return null
-        }
-    }
-
-    freshBoard() {
-        this.board = [...this.boardMatrix];
-    }
-}
-
-class TicTacToe extends GameConcept
-{
-    constructor()
-    {
-        super();
-        this.activeGamePieces = this.gamePieces;
-        this.players.map(player => player.gamePiece = this.activeGamePieces.pop());
-        this.drawGrid();
-        this.bindListeners();
-    }
-
-    drawGrid()
-    {
-        this.sb.grid.plotBaseTiles( new Tile(
-            {shape: 'rectangle', border: false, textStyles: {size: 10}, text: ''
-        }) );
-        this.sb.grid.refreshStage();
-    }
-
-    bindListeners()
-    {
-        this.sb.grid.canvas.addEventListener('tile:click', (e) => {
-            if (!this.isLocked) {
-                let {viewportCoords} = e.detail;
-                let [worldX, worldY] = viewportCoords;
-                let tile = new Tile({worldX, worldY, text: this.activePlayer.gamePiece, textStyles: {size: 10}});
-                this.takeTurn({tile});
-            }
-        });
-    }
-
-    get isBoardGame()
-    {
-        return true
-    }
-
-    get numberOfPlayers()
-    {
-        return 2
-    }
-
-    get turnBased()
-    {
-        return true
-    }
-
-    get gamePieces()
-    {
-        return ['X', 'O']
-    }
-
-    get piecesPerPerson()
-    {
-        return null
-    }
-
-    get boardMatrix()
-    {
-        return Array(3).fill( Array(3).fill('') )
-    }
-}
-
-export { CanvasGrid, GameGrid, SquareBoard, TicTacToe, Tile, TileMap };
+export { CanvasGrid, GameGrid, Tile, TileMap };

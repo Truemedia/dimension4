@@ -154,11 +154,12 @@ export default class Mouse
         // Viewport
         // Offset
         let [viewportX, viewportY] = viewportCoords
+        console.log('viewport zui offset', viewportZuiOffset)
         let [zOffsetX, zOffsetY] = viewportZuiOffset
         // Spawn (is top left most tile so not needed if is 0,0)
         let [spawnX, spawnY] = this.spawnPoint.coords
 
-        console.log('x', viewportX, zOffsetX, spawnX)
+        // console.log('x', viewportX, zOffsetX, spawnX)
         let worldPoint = new Point
         worldPoint.coords = [
             viewportX - zOffsetX, viewportY - zOffsetY
